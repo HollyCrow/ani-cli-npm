@@ -1,0 +1,23 @@
+{
+  "name": "ani-cli-npm",
+  "version": "1.0.0",
+  "description": "ani-cli tool rewriten as npm package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "anime",
+    "ani-cli"
+  ],
+  "author": "bumpkin-pi",
+  "license": "ISC",
+  "type": "module",
+  "bin": {
+    "ani-cli-npm": "bin/index.cjs"
+  },
+  "dependencies": {
+    "got": "^12.5.1",
+    "request": "^2.88.2"
+  }
+}
