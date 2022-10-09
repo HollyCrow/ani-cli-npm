@@ -1,32 +1,44 @@
 #! /usr/bin/env node
 const args = process.argv.slice(2);
 const fs = require("fs");
-const request = require("request")
-const reg = fs.readFileSync("regex.reg").toString().replace(/ /g,'');
+const request = require("request-promise")
 
 function matchRuleShort(str, rule) {
     let escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
 }
-const https = require('https');
+
+
 async function search_anime(search){
-    let all = []
-    await request({
+    let filter = "*<ahref=\"/category/*\"title=\"*\">"
+    let x = await request({
         url: "https://gogoanime.lu//search.html?keyword="+search
-    }, await function(error, response, body){
+    }, function(error, response, body){
         let html = body.split('\n')
-        let lines = []
+        let lines = ""
         for (let x in html){
             html[x] = html[x].replace(/ /g,'').replace(/\t/g,'')
-            if (matchRuleShort(html[x], reg)){
-                lines.push(html[x])
-                console.log(html[x])
+            if (matchRuleShort(html[x], filter)){
+                lines += html[x]+"\n"
             }
         }
-        return lines
+        fs.writeFileSync("./temp.txt", lines, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
     })
 
+    let text = fs.readFileSync("./temp.txt").toString().split("\n");
 
+    for (x in text){
+        text[x] = text[x].replace("<ahref=\"/category/", "").replace("\"title=\"", "").replace("\">", "")
+        text[x] = text[x].slice(0, Math.ceil(text[x].length / 2));
+    }
+    text.pop()
+
+    return text
 }
 
 async function main(){
