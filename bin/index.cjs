@@ -42,7 +42,7 @@ async function search_anime(search){
 }
 
 async function main(){
-    console.log(await search_anime("one"))
+    console.log(await search_anime("sword art online"))
 }
 
 main()
