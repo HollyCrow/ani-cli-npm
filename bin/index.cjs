@@ -12,7 +12,7 @@ function matchRuleShort(str, rule) {
 
 async function search_anime(search){
     let filter = "*<ahref=\"/category/*\"title=\"*\">"
-    let x = await request({
+    await request({
         url: "https://gogoanime.lu//search.html?keyword="+search
     }, function(error, response, body){
         let html = body.split('\n')
@@ -20,6 +20,8 @@ async function search_anime(search){
         for (let x in html){
             html[x] = html[x].replace(/ /g,'').replace(/\t/g,'')
             if (matchRuleShort(html[x], filter)){
+                html[x] = html[x].slice(html[x].indexOf("/category/")+10);
+                html[x] = html[x].slice(0, html[x].indexOf("\"title=")).replaceAll("-", " ");
                 lines += html[x]+"\n"
             }
         }
@@ -31,11 +33,8 @@ async function search_anime(search){
         });
     })
     let text = fs.readFileSync("./temp.txt").toString().split("\n");
-    for (x in text){
-        text[x] = text[x].slice(text[x].indexOf("/category/")+10);
-        text[x] = text[x].slice(0, text[x].indexOf("\"title=")).replaceAll("-", " ");
-    }
     text.pop()
+
     return text
 }
 
