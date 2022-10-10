@@ -42,6 +42,7 @@ async function search_anime(search){
 }
 
 async function main(){
+    console.log("Animaes: ")
     console.log(await search_anime("sword art online"))
 }
 
