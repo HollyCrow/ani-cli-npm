@@ -1,15 +1,16 @@
 #! /usr/bin/env node
-const fs = require("fs");
-const http = require('http');
-//const HttpsProxyAgent = require('https-proxy-agent');
+
 const VLC = require('vlc-simple-player');
-//const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
 const prompt = require("simple-input");
+const http = require('http');
+const fs = require("fs");
+//const HttpsProxyAgent = require('https-proxy-agent');
+//const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
+
 async function input(message){
     console.log(colors.Magenta,message)
     return await prompt(">")
 }
-
 
 const download_dir = "./../downloads/"
 const gogohd_url="https://gogohd.net/"
@@ -82,14 +83,17 @@ async function search_anime(search){
 async function episode_list(anime_id){
     let html = (await curl(base_url+"/v1/"+anime_id)).split("\n")
     let lines = ""
+
     for (let x in html){
         if(matchRuleShort(html[x], "*<div id=\"epslistplace\"*")){
             lines = (html[x])
         }
     }
+
     lines = lines.slice(55, lines.length).replace("}</div>", "")
     lines = "{" + lines.slice(lines.indexOf(",")+1, lines.length) + "}"
     lines = JSON.parse(lines)
+
     let json = []
     for (x in lines){
         json.push(lines[x])
@@ -124,23 +128,27 @@ async function selection(options, prompt){
 }
 
 
-async function process_search(query){
+async function process_search(query) {
     console.log("Searching: "+query)
+
     let search_results = await search_anime(query)
-    if (!search_results[0]){
+    if (!search_results[0]) {
         console.log("No results.")
         return 0
-    }else{
-        for (x in search_results){
+    } else {
+        for (x in search_results) {
             console.log(colors.Cyan,`${parseInt(x)+1})${" ".repeat(((search_results.length).toString().length+1)-((parseInt(x)+1).toString().length))}${search_results[x].replaceAll("-", " ")}`)
         }
     }
+
     let anime_id = search_results[await selection(search_results.length, "Please select an anime.")-1]
     let episodes = await episode_list(anime_id)
     let episode_number = await selection(episodes.length, `Please select an episode (1-${episodes.length}).`)
-    return {anime_id:anime_id,
-        episodes:episodes,
-        episode_number:episode_number
+
+    return {
+        anime_id: anime_id,
+        episodes: episodes,
+        episode_number: episode_number
     }
 }
 
@@ -170,6 +178,7 @@ async function generate_link(provider, html){
                 console.log("Error, no fb_id found.")
                 return 0
             }
+
             //let refr = "https://fembed-hd.com/v/"+fb_id
             let post = await curl("https://fembed-hd.com/api/source/"+fb_id, "POST")
             post = post.slice(post.indexOf(",\"data\":[{\"file\":\"")+18, post.length)
@@ -185,9 +194,17 @@ async function generate_link(provider, html){
 async function main(){
     let choice = await input("Search anime.")
     let anime = await process_search(choice)
+
+    console.log("\n")
+
+    console.log(colors.Blue, "Indexing video")
     let link = await get_video_link(anime.episodes[anime.episode_number])
+
+    console.log(colors.Blue, "Loading VLC...\n")
     let player = new VLC(link)
-    this.process.on('close', (code) => {
+    console.log(colors.Magenta, "VLC Initialised!")
+
+    player.on("exit", (code) => {
         console.log("exit")
     })
 }
