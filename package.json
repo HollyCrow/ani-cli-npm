@@ -17,9 +17,9 @@
     "ani-cli-npm": "bin/index.cjs"
   },
   "dependencies": {
-    "got": "^12.5.1",
     "http-proxy-agent": "^5.0.0",
-    "request": "^2.88.2",
-    "simple-input": "^1.0.1"
+    "https-proxy-agent": "^5.0.1",
+    "simple-input": "^1.0.1",
+    "vlc-simple-player": "^0.5.1"
   }
 }
