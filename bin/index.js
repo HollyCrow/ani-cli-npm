@@ -185,8 +185,15 @@ async function generate_link(provider, html){
 async function main(){
     let choice = await input("Search anime.")
     let anime = await process_search(choice)
+
+    console.log("\n")
+
+    console.log(colors.Blue, "Indexing video")
     let link = await get_video_link(anime.episodes[anime.episode_number])
+
+    console.log(colors.Blue, "Loading VLC...\n")
     let player = new VLC(link)
+    console.log(colors.Magenta, "VLC Initialised!")
 }
 
 main()
