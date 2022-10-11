@@ -4,6 +4,8 @@ const fs = require("fs");
 const request = require("request-promise");
 const http = require('http');
 
+const HttpsProxyAgent = require('https-proxy-agent');
+const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
 
 const agent="Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
 const PID=0
@@ -12,26 +14,33 @@ const quality="best"
 const fzf = 0
 const auto_play=0
 const download_dir = "./../downloads/"
-const gogohd_url="https://gogohd.net/"
+const gogohd_url="https://gogohd.net"
 const base_url="https://animixplay.to"
 const player_fn = "download"
 
-
-
 async function curl(url){
-    await request({
-        url: url,
-        headers: {
+    fetch(url, {
+        "agent": proxyAgent,
+        "headers": {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
-        }
-    }, function(error, response, body){
-        fs.writeFileSync("./temp.txt", body, function(err) {
+        },
+        "referrerPolicy": "origin",
+        "body": null,
+        "method": "GET",
+        "proxy": "68.183.230.116:3951"
+    }).then(function (response) {
+        return response.text();
+    }).then(function (html) {
+        fs.writeFileSync("./temp.txt", html, function(err) {
             if(err) {
                 return console.log(err);
             }
             console.log("The file was saved!");
         });
-    })
+    }).catch(function (err) {
+        console.warn(`Something went wrong connecting to ${url}.`, err);
+    });
+
     return fs.readFileSync("./temp.txt").toString()
 }
 
@@ -96,7 +105,7 @@ async function download(url, name){
 function episode_selection(episodes){
     let selection
     while (true){
-        selection = 3
+        selection = prompt("Select an episode: \n>")
         if (selection < episodes && selection > 1){
             break
         }
@@ -107,7 +116,7 @@ function episode_selection(episodes){
 function anime_selection(list){
     let selection
     while (true){
-        selection = 3
+        selection = prompt("Select an anime: \n>")
         if (selection <= list.length && selection > 1){
             break
         }

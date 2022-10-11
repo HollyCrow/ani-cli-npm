@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "got": "^12.5.1",
+    "node-fetch-with-proxy": "^0.1.6",
+    "prompt-sync": "^4.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   }
