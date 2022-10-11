@@ -34,7 +34,8 @@ async function curl(url){
         url: url,
         headers: {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
-        }
+        },
+        proxy: "194.195.213.197:1080"
     }, async function(error, response, body){
         if (!body){
             body = ""
