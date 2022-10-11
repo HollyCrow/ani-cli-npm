@@ -2,7 +2,7 @@
 const fs = require("fs");
 const http = require('http');
 //const HttpsProxyAgent = require('https-proxy-agent');
-const VLC = require('vlc-simple-player')
+const VLC = require('vlc-simple-player');
 //const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
 const prompt = require("simple-input");
 async function input(message){

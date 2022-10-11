@@ -12,8 +12,9 @@
   ],
   "author": "bumpkin-pi",
   "license": "ISC",
-  "type": "module",
-  "bin": "./index.cjs",
+  "bin": {
+    "multiply": "bin/index.js"
+  },
   "dependencies": {
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.1",
