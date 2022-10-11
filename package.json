@@ -1,8 +1,8 @@
 {
   "name": "ani-cli-npm",
   "version": "1.0.0",
-  "description": "ani-cli tool rewriten as npm package",
-  "main": "index.cjs",
+  "description": "ani-cli tool rewritten as npm package",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,9 +13,7 @@
   "author": "bumpkin-pi",
   "license": "ISC",
   "type": "module",
-  "bin": {
-    "ani-cli-npm": "bin/index.cjs"
-  },
+  "bin": "./index.cjs",
   "dependencies": {
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.1",
