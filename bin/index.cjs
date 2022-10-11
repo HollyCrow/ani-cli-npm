@@ -1,11 +1,9 @@
 #! /usr/bin/env node
 const args = process.argv.slice(2);
 const fs = require("fs");
-const request = require("request-promise");
 const http = require('http');
+const request = require("request")
 
-
-const agent="Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
 const PID=0
 const scrape = "Query"
 const quality="best"
@@ -15,6 +13,19 @@ const download_dir = "./../downloads/"
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
 const player_fn = "download"
+const input = require("simple-input");
+
+
+const colors = {
+    Black: "\x1b[30m%s\x1b[0m",
+    Red: "\x1b[31m%s\x1b[0m",
+    Green: "\x1b[32m%s\x1b[0m",
+    Yellow: "\x1b[33m%s\x1b[0m",
+    Blue: "\x1b[34m%s\x1b[0m",
+    Magenta: "\x1b[35m%s\x1b[0m",
+    Cyan: "\x1b[36m%s\x1b[0m",
+    White: "\x1b[37m%s\x1b[0m"
+}
 
 
 
@@ -24,8 +35,11 @@ async function curl(url){
         headers: {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
         }
-    }, function(error, response, body){
-        fs.writeFileSync("./temp.txt", body, function(err) {
+    }, async function(error, response, body){
+        if (!body){
+            body = ""
+        }
+        await fs.writeFileSync("./temp.txt", body, function(err) {
             if(err) {
                 return console.log(err);
             }
@@ -134,6 +148,8 @@ async function process_search(query){
 }
 
 async function main(){
+    console.log(colors.Cyan, 'I am cyan')
+
     await process_search("sword art online")
 }
 

@@ -19,6 +19,6 @@
   "dependencies": {
     "got": "^12.5.1",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "simple-input": "^1.0.1"
   }
 }
