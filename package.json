@@ -2,7 +2,7 @@
   "name": "ani-cli-npm",
   "version": "1.0.0",
   "description": "ani-cli tool rewriten as npm package",
-  "main": "index.js",
+  "main": "index.cjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,9 +18,8 @@
   },
   "dependencies": {
     "got": "^12.5.1",
-    "node-fetch-with-proxy": "^0.1.6",
-    "prompt-sync": "^4.2.0",
+    "http-proxy-agent": "^5.0.0",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "simple-input": "^1.0.1"
   }
 }

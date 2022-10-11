@@ -1,8 +1,8 @@
 #! /usr/bin/env node
 const args = process.argv.slice(2);
 const fs = require("fs");
-const request = require("request-promise");
 const http = require('http');
+const request = require("request")
 
 const HttpsProxyAgent = require('https-proxy-agent');
 const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
@@ -14,9 +14,24 @@ const quality="best"
 const fzf = 0
 const auto_play=0
 const download_dir = "./../downloads/"
-const gogohd_url="https://gogohd.net"
+const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
 const player_fn = "download"
+const input = require("simple-input");
+
+
+const colors = {
+    Black: "\x1b[30m%s\x1b[0m",
+    Red: "\x1b[31m%s\x1b[0m",
+    Green: "\x1b[32m%s\x1b[0m",
+    Yellow: "\x1b[33m%s\x1b[0m",
+    Blue: "\x1b[34m%s\x1b[0m",
+    Magenta: "\x1b[35m%s\x1b[0m",
+    Cyan: "\x1b[36m%s\x1b[0m",
+    White: "\x1b[37m%s\x1b[0m"
+}
+
+
 
 async function curl(url){
     fetch(url, {
@@ -105,7 +120,7 @@ async function download(url, name){
 function episode_selection(episodes){
     let selection
     while (true){
-        selection = prompt("Select an episode: \n>")
+        selection = 3
         if (selection < episodes && selection > 1){
             break
         }
@@ -116,7 +131,7 @@ function episode_selection(episodes){
 function anime_selection(list){
     let selection
     while (true){
-        selection = prompt("Select an anime: \n>")
+        selection = 3
         if (selection <= list.length && selection > 1){
             break
         }
@@ -143,6 +158,8 @@ async function process_search(query){
 }
 
 async function main(){
+    console.log(colors.Cyan, 'I am cyan')
+
     await process_search("sword art online")
 }
 
