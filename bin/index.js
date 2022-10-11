@@ -187,9 +187,6 @@ async function main(){
     let anime = await process_search(choice)
     let link = await get_video_link(anime.episodes[anime.episode_number])
     let player = new VLC(link)
-    this.process.on('close', (code) => {
-        console.log("exit")
-    })
 }
 
 main()
