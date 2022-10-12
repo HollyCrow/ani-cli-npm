@@ -7,6 +7,14 @@ const fs = require("fs");
 //const HttpsProxyAgent = require('https-proxy-agent');
 //const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
 
+var config = {
+    download_folder: download_dir,
+    quality: "best",
+    
+}
+
+
+
 async function input(message){
     console.log(colors.Magenta,message)
     return await prompt(">")
@@ -188,10 +196,7 @@ async function generate_link(provider, html){
 }
 
 
-
-
-
-async function main(){
+async function search(){
     let choice = await input("Search anime.")
     let anime = await process_search(choice)
 
@@ -203,10 +208,23 @@ async function main(){
     console.log(colors.Blue, "Loading VLC...\n")
     let player = new VLC(link)
     console.log(colors.Magenta, "VLC Initialised!")
+}
 
-    player.on("exit", (code) => {
-        console.log("exit")
-    })
+
+
+async function main(){
+    console.log(colors.Blue, "Welcome to Ani-Cli-npm")
+    console.log("\n")
+    console.log(colors.Cyan, "1) Search")
+    console.log(colors.Cyan, "2) config")
+    console.log(colors.Cyan, "3) quit")
+    let choice = parseInt(await input("\nselect;"))
+
+    switch (choice){
+        case 1:
+            await search()
+            break
+    }
 }
 
 main()
