@@ -1,6 +1,6 @@
 {
   "name": "ani-cli-npm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ani-cli tool rewritten as npm package",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,6 @@
     "multiply": "bin/index.js"
   },
   "dependencies": {
-    "downloads-folder": "^3.0.3",
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.1",
     "simple-input": "^1.0.1",

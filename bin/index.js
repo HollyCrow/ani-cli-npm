@@ -129,8 +129,9 @@ async function process_search(query) {
 
     let search_results = await search_anime(query)
     if (!search_results[0]) {
-        console.log("No results.")
-        return 0
+        console.log(colors.Red, "No results.")
+        await main()
+        process.exit()
     } else {
         for (x in search_results) {
             console.log(colors.Cyan,`${parseInt(x)+1})${" ".repeat(((search_results.length).toString().length+1)-((parseInt(x)+1).toString().length))}${search_results[x].replaceAll("-", " ")}`)
@@ -242,10 +243,9 @@ async function search(){
 
 }
 
-
+console.clear()
+console.log(colors.Blue, "Welcome to Ani-Cli-npm")
 async function main(){
-    console.clear()
-    console.log(colors.Blue, "Welcome to Ani-Cli-npm")
     console.log(colors.Cyan, "1) Search")
     console.log(colors.Cyan, "2) config")
     console.log(colors.Cyan, "3) quit")
