@@ -205,10 +205,6 @@ async function main(){
     
     let player = new VLC(link)
     console.log(colors.Magenta, "VLC Initialised!")
-
-    player.on("exit", (code) => {
-        console.log("exit")
-    })
 }
 
 main()
