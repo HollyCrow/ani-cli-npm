@@ -10,11 +10,12 @@ const fs = require("fs");
 var config = {
     download_folder: download_dir,
     quality: "best",
-    
+
 }
 
 
 
+const prompt = require("simple-input");
 async function input(message){
     console.log(colors.Magenta,message)
     return await prompt(">")
@@ -207,8 +208,8 @@ async function search(){
 
     console.log(colors.Blue, "Loading VLC...\n")
     let player = new VLC(link)
-    console.log(colors.Magenta, "VLC Initialised!")
-}
+    console.log(colors.Cyan, "Loading VLC... ")
+    console.log(colors.Yellow, "URL: "+link)
 
 
 

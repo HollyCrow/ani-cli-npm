@@ -1,3 +1,5 @@
 # Project exclude paths
 /node_modules/
 /downloads/*
+/bin/temp.txt
+temp.txt
