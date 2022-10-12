@@ -2,24 +2,12 @@
 
 const VLC = require('vlc-simple-player');
 const prompt = require("simple-input");
-const http = require('http');
 const fs = require("fs");
+const downloadsFolder = require('downloads-folder');
 //const HttpsProxyAgent = require('https-proxy-agent');
 //const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
-/*
-var config = {
-    download_folder: download_dir,
-    quality: "best",
 
-}*/
-
-
-async function input(message){
-    console.log(colors.Magenta,message)
-    return await prompt(">")
-}
-
-const download_dir = "./../downloads/"
+const download_dir = downloadsFolder()
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
 
@@ -34,6 +22,18 @@ const colors = {
     White: "\x1b[37m%s\x1b[0m"
 }
 
+let config = {
+    download_dir: download_dir,
+    quality: "best",
+    player: "VLC"
+}
+
+async function input(message){
+    if (message){
+        console.log(colors.Magenta,message)
+    }
+    return await prompt(">")
+}
 
 async function curl(url, method="GET"){
     await fetch(url, {
@@ -110,20 +110,12 @@ async function episode_list(anime_id){
 
 
 async function download(url, name){
-    let file = fs.createWriteStream(download_dir+name)
-    http.get(url, function(response) {
-        response.pipe(file);
-        // after download completed close filestream
-        file.on("finish", () => {
-            file.close();
-            console.log(`Downloaded: ${name}`);
-        });
-    });
+    console.log(colors.Red, "Feature not implemented yet. Sorry for any inconvenience.\nIf you need to download a video, request the link, then download it via your internet browser of choice.")
 }
 
 
 async function selection(options, prompt){
-    let selection
+    let selection = 0
     while (!(selection <= options && selection > 1)){
         selection = (await input(prompt))
         if (selection <= options && selection >= 1){
@@ -195,35 +187,68 @@ async function generate_link(provider, html){
 }
 
 
+function play(link, player="VLC"){
+    console.clear()
+    if (player === "VLC"){
+        console.log(colors.Yellow, "Loading VLC... ")
+        let player = new VLC(link)
+        console.log(colors.Yellow, "Playing video.")
+    }
+}
+
 async function search(){
-    let choice = await input("Search anime.")
+    console.clear()
+    console.log(colors.Blue, "Search...")
+    let choice = await input("")
     let anime = await process_search(choice)
 
     console.log("\n")
 
-    console.log(colors.Blue, "Indexing video")
+    console.log(colors.Blue, "Indexing video...")
     let link = await get_video_link(anime.episodes[anime.episode_number])
+    console.clear()
+    console.log(colors.Blue, "Episode found.\n")
+    console.log(colors.Cyan, "1) Play")
+    console.log(colors.Cyan, "2) Download")
+    console.log(colors.Cyan, "3) Show Link")
+    console.log(colors.Cyan, "4) quit")
+    choice = parseInt(await input("select;"))
+    switch (choice){
+        case 1:
+            await play(link, config.player)
+            break
+        case 2:
+            download(link, anime.anime_id+anime.episode_number+".mp4")
+            break
+        case 3:
+            console.log(colors.Yellow, "Link: "+link)
+            break
+        case 4:
+            process.exit()
+    }
 
-    console.log(colors.Blue, "Loading VLC...\n")
-    let player = new VLC(link)
-    console.log(colors.Cyan, "Loading VLC... ")
-    console.log(colors.Yellow, "URL: "+link)
+
+
 }
 
 
-
 async function main(){
+    console.clear()
     console.log(colors.Blue, "Welcome to Ani-Cli-npm")
-    console.log("\n")
     console.log(colors.Cyan, "1) Search")
     console.log(colors.Cyan, "2) config")
     console.log(colors.Cyan, "3) quit")
-    let choice = parseInt(await input("\nselect;"))
+    let choice = parseInt(await input("select;"))
 
     switch (choice){
         case 1:
             await search()
             break
+        case 2:
+            break
+        case 3:
+            console.log(colors.Black, "Exiting...")
+            process.exit()
     }
 }
 
