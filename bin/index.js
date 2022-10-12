@@ -3,11 +3,9 @@
 const VLC = require('vlc-simple-player');
 const prompt = require("simple-input");
 const fs = require("fs");
-const downloadsFolder = require('downloads-folder');
 //const HttpsProxyAgent = require('https-proxy-agent');
 //const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
 
-const download_dir = downloadsFolder()
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
 
@@ -23,7 +21,6 @@ const colors = {
 }
 
 let config = {
-    download_dir: download_dir,
     quality: "best",
     player: "VLC"
 }
