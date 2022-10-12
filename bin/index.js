@@ -187,12 +187,26 @@ async function generate_link(provider, html){
 }
 
 
-function play(link, player="VLC"){
+async function play(link, player="VLC"){
     console.clear()
     if (player === "VLC"){
         console.log(colors.Yellow, "Loading VLC... ")
         let player = new VLC(link)
-        console.log(colors.Yellow, "Playing video.")
+        console.log(colors.Yellow, "Playing video.\n")
+        console.log("VLC;")
+        console.log(colors.Cyan, "1) Show Link")
+        console.log(colors.Cyan, "2) Quit")
+        choice = parseInt(await input("select;"))
+        switch (choice){
+            case 1:
+                console.log(colors.Yellow, "Link: "+link)
+                break
+            case 2:
+                process.exit()
+                break
+        }
+    }else{
+
     }
 }
 
