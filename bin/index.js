@@ -6,16 +6,14 @@ const http = require('http');
 const fs = require("fs");
 //const HttpsProxyAgent = require('https-proxy-agent');
 //const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
-
+/*
 var config = {
     download_folder: download_dir,
     quality: "best",
 
-}
+}*/
 
 
-
-const prompt = require("simple-input");
 async function input(message){
     console.log(colors.Magenta,message)
     return await prompt(">")
@@ -210,6 +208,7 @@ async function search(){
     let player = new VLC(link)
     console.log(colors.Cyan, "Loading VLC... ")
     console.log(colors.Yellow, "URL: "+link)
+}
 
 
 
