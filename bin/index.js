@@ -157,21 +157,24 @@ async function get_video_link(episode_dpage){
     let id = episode_dpage.replace("//gogohd.net/streaming.php?id=","")
     id = id.slice(0, id.indexOf("="))
 
-    let html = await curl(`${gogohd_url}streaming.php?id=${id}`)
-    return await generate_link(1, html)
+    return await generate_link(1,id)
 }
 
 
-async function generate_link(provider, html){
+async function generate_link(provider, id){
+    let html = ""
+    let provider_name = ""
     switch (provider) {
         case 1:
-            let provider_name = 'Xstreamcdn'
-            console.log(colors.Blue, `Fetching ${provider_name} links...`)
+            html = await curl(`${gogohd_url}streaming.php?id=${id}`)
+            provider_name = 'Xstreamcdn'
+            console.log(colors.Yellow, `Fetching ${provider_name} links...`)
             html = html.split("\n")
             let fb_id = ""
             for (x in html){
                 if (matchRuleShort(html[x], "*<li class=\"linkserver\" data-status=\"1\" data-video=\"https://fembed9hd.com/v/*")){
                     fb_id = html[x].slice(html[x].indexOf("/v/")+3, html[x].indexOf("\">X"))
+                    break
                 }
             }
             if (!fb_id){
@@ -184,6 +187,19 @@ async function generate_link(provider, html){
             post = post.slice(post.indexOf(",\"data\":[{\"file\":\"")+18, post.length)
             post = post.slice(0, post.indexOf("\"")).replaceAll("\\/","/")
             return post
+        /*case 2:
+            provider_name = 'Animixplay'
+            console.log(`${base_url}/api/live/${"TkRBMk9EVT1MVFhzM0dyVTh3ZTlPVGtSQk1rOUVWVDA9"}`)
+            console.log(colors.Yellow, `Fetching ${provider_name} links...`)
+            let refr="$base_url"
+            let links = []
+            html = (await curl(`${base_url}/api/live/${"Some variable?"}`)).split("\n") // this needs fixed for alot of bigger titles to work.
+            for (x in html){
+                console.log(html[x])
+            }
+*/
+
+
     }
 }
 
