@@ -8,7 +8,6 @@ const fs = require("fs");
 
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
-
 const colors = {
     Black: "\x1b[30m%s\x1b[0m",
     Red: "\x1b[31m%s\x1b[0m",
@@ -19,11 +18,12 @@ const colors = {
     Cyan: "\x1b[36m%s\x1b[0m",
     White: "\x1b[37m%s\x1b[0m"
 }
-
 let config = {
     quality: "best",
     player: "VLC"
 }
+
+
 
 async function input(message){
     if (message){
@@ -31,6 +31,7 @@ async function input(message){
     }
     return await prompt(">")
 }
+
 
 async function curl(url, method="GET"){
     await fetch(url, {
@@ -67,7 +68,6 @@ function matchRuleShort(str, rule) {
 
 async function search_anime(search){
     let filter = "*<ahref=\"/category/*\"title=\"*\">"
-
     let html = (await curl("https://gogoanime.lu//search.html?keyword="+search)).split("\n")
     let lines = []
     for (x in html){
@@ -78,7 +78,10 @@ async function search_anime(search){
             lines.push(html[x])
         }
     }
-    lines.pop()
+    if (!lines[0]){
+        lines.pop()
+    }
+
 
     return lines
 }
@@ -140,7 +143,7 @@ async function process_search(query) {
 
     let anime_id = search_results[await selection(search_results.length, "Please select an anime.")-1]
     let episodes = await episode_list(anime_id)
-    let episode_number = await selection(episodes.length, `Please select an episode (1-${episodes.length}).`)
+    let episode_number = (await selection(episodes.length, `Please select an episode (1-${episodes.length}).`))-1
 
     return {
         anime_id: anime_id,
@@ -208,6 +211,7 @@ async function play(link, player="VLC"){
     }
 }
 
+
 async function search(){
     console.clear()
     console.log(colors.Blue, "Search...")
@@ -238,10 +242,10 @@ async function search(){
         case 4:
             process.exit()
     }
-
-
-
 }
+
+
+
 
 console.clear()
 console.log(colors.Blue, "Welcome to Ani-Cli-npm")
