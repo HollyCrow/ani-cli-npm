@@ -137,7 +137,7 @@ async function process_search(query){
     }
     let anime_id = search_results[await selection(search_results.length, "Please select an anime.")-1]
     let episodes = await episode_list(anime_id)
-    let episode_number = await selection(episodes.length, `Please select an episode (1-${episodes.length}).`)
+    let episode_number = await selection(episodes.length, `Please select an episode (1-${episodes.length}).`)-1
     return {anime_id:anime_id,
         episodes:episodes,
         episode_number:episode_number
@@ -193,7 +193,7 @@ async function main(){
 
     console.log(colors.Cyan, "Loading VLC... ")
     console.log(colors.Yellow, "URL: "+link)
-    
+
     let player = new VLC(link)
     console.log(colors.Magenta, "VLC Initialised!")
 }
