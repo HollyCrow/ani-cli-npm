@@ -166,7 +166,7 @@ async function generate_link(provider, html){
     switch (provider) {
         case 1:
             let provider_name = 'Xstreamcdn'
-            console.log(colors.Blue, `Fetching ${provider_name} links...`)
+            console.log(colors.Cyan, `Fetching ${provider_name} links...`)
             html = html.split("\n")
             let fb_id = ""
             for (x in html){
@@ -197,16 +197,14 @@ async function main(){
 
     console.log("\n")
 
-    console.log(colors.Blue, "Indexing video")
+    console.log(colors.Cyan, "Indexing video")
     let link = await get_video_link(anime.episodes[anime.episode_number])
 
-    console.log(colors.Blue, "Loading VLC...\n")
+    console.log(colors.Cyan, "Loading VLC... ")
+    console.log(colors.Yellow, "URL: "+link)
+    
     let player = new VLC(link)
     console.log(colors.Magenta, "VLC Initialised!")
-
-    player.on("exit", (code) => {
-        console.log("exit")
-    })
 }
 
 main()
