@@ -68,7 +68,7 @@ function matchRuleShort(str, rule) {
 
 async function search_anime(search){
     let filter = "*<ahref=\"/category/*\"title=\"*\">"
-    let html = (await curl("https://gogoanime.lu//search.html?keyword="+search)).split("\n")
+    let html = (await curl("https://gogoanime.dk//search.html?keyword="+search)).split("\n")
     let lines = []
     for (x in html){
         html[x] = html[x].replace(/ /g,'').replace(/\t/g,'')
