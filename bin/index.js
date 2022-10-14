@@ -389,6 +389,7 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
             console.log(colors.Yellow, "Link: "+link)
             break
         case 4:
+            await main()
             process.exit()
     }
 }
