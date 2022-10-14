@@ -34,29 +34,37 @@ async function input(message){
 
 
 async function curl(url, method="GET"){
-    await fetch(url, {
-        //"agent": proxyAgent,
-        "headers": {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0',
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        "referrerPolicy": "origin",
-        "body": null,
-        "method": method,
-        "proxy": "68.183.230.116:3951"
-    }).then(function (response) {
-        return response.text();
-    }).then(function (html) {
-        fs.writeFileSync("./temp.txt", html, function(err) {
-            if(err) {
-                return console.log(err);
-            }
+    try{
+        await fetch(url, {
+            //"agent": proxyAgent,
+            "headers": {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0',
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            "referrerPolicy": "origin",
+            "body": null,
+            "method": method,
+            "proxy": "68.183.230.116:3951"
+        }).then(function (response) {
+            return response.text();
+        }).then(function (html) {
+            fs.writeFileSync("./temp.txt", html, function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+            });
+        }).catch(async function(err) {
+            console.warn(colors.Red, `Something went wrong connecting to ${url}.`);
+            await search();
+            process.exit()
         });
-    }).catch(function (err) {
-        console.warn(`Something went wrong connecting to ${url}.`, err);
-    });
 
-    return fs.readFileSync("./temp.txt").toString()
+        return fs.readFileSync("./temp.txt").toString()
+    }catch{
+        console.log(colors.Red, "Something went wrong in curl()")
+        await main()
+    }
+
 }
 
 
