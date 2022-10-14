@@ -1,6 +1,6 @@
 {
   "name": "ani-cli-npm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "ani-cli tool rewritten as npm package",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "dependencies": {
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.1",
+    "open": "^8.4.0",
     "simple-input": "^1.0.1",
     "vlc-simple-player": "^0.5.1"
   }
