@@ -50,8 +50,8 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
     console.log(colors.Cyan, `1) Player; ${temp.player}`)
     console.log(colors.Cyan, `2) Proxy; ${temp.proxy}`)
     console.log(colors.Cyan, `3) User agent; ${temp.user_agent}`)
-    console.log(colors.Cyan, "4) Save and Quit")
-    console.log(colors.Cyan, "5) Quit without saving changes")
+    console.log(colors.Cyan, "4) Save and exit")
+    console.log(colors.Cyan, "5) Exit without saving changes")
     let choice = parseInt(await input(""));
     switch (choice){
         case 1:
@@ -68,7 +68,7 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
             }
             return temp,0
         case 2:
-            temp.proxy = (await(input("New Proxy;"))).replace(" ", "")
+            temp.proxy = (await(input("New Proxy;"))).replaceAll(" ", "")
             return temp, 0
         case 3:
             temp.user_agent = await(input("New User agent;"))
@@ -127,7 +127,7 @@ async function search_anime(search){
     let html = (await curl("https://gogoanime.dk//search.html?keyword="+search)).split("\n")
     let lines = []
     for (x in html){
-        html[x] = html[x].replace(/ /g,'').replace(/\t/g,'')
+        html[x] = html[x].replaceAll(/ /g,'').replaceAll(/\t/g,'')
         if (matchRuleShort(html[x], filter)){
             html[x] = html[x].slice(html[x].indexOf("/category/")+10);
             html[x] = html[x].slice(0, html[x].indexOf("\"title="));
@@ -273,34 +273,50 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
     if (player === "VLC"){
         console.log(colors.Yellow, "Loading VLC... ")
         let player = new VLC(link)
-        console.log(colors.Blue, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}`)
+        console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
         console.log(colors.Cyan, "1) Show Link")
-        console.log(colors.Cyan, "2) Quit")
+        console.log(colors.Cyan, "2) Next Episode")
+        console.log(colors.Cyan, "3) Quit")
         choice = parseInt(await input("select;"))
         switch (choice){
             case 1:
                 console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
-                console.log
+                console.log(colors.Blue, "ANI-CLI-NPM \n")
                 console.log(colors.Yellow, "Link: "+link)
                 break
             case 2:
+                link = await get_video_link(anime.episodes[anime.episode_number+1])
+                await play(link, anime, config.player)
+                process.exit()
+                break
+            case 3:
+                console.clear()
+                await main()
                 process.exit()
                 break
         }
-        console.log(colors.Cyan, "1) Quit")
+        console.log(colors.Cyan, "1) Next Episode")
+        console.log(colors.Cyan, "2) Quit")
         choice = parseInt(await input("select;"))
         switch (choice){
             case 1:
+                link = await get_video_link(anime.episodes[anime.episode_number+1])
+                await play(link, anime, config.player)
+                process.exit()
+                break
+            case 2:
+                console.clear()
+                await main()
                 process.exit()
                 break
         }
     }else if (player === "BROWSER"){
         console.log(colors.Yellow, "Opening video in browser... ")
         open(link)
-        console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replace("-", " ")}\n`)
+        console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
         console.log(colors.Cyan, "1) Show Link")
-        console.log(colors.Cyan, "2) Quit")
+        console.log(colors.Cyan, "2) Next Episode")
+        console.log(colors.Cyan, "3) Quit")
         choice = parseInt(await input("select;"))
         switch (choice){
             case 1:
@@ -309,13 +325,28 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
                 console.log(colors.Yellow, "Link: "+link)
                 break
             case 2:
+                link = await get_video_link(anime.episodes[anime.episode_number+1])
+                await play(link, anime, config.player)
+                process.exit()
+                break
+            case 3:
+                console.clear()
+                await main()
                 process.exit()
                 break
         }
-        console.log(colors.Cyan, "1) Quit")
+        console.log(colors.Cyan, "1) Next Episode")
+        console.log(colors.Cyan, "2) Quit")
         choice = parseInt(await input("select;"))
         switch (choice){
             case 1:
+                link = await get_video_link(anime.episodes[anime.episode_number+1])
+                await play(link, anime, config.player)
+                process.exit()
+                break
+            case 2:
+                console.clear()
+                await main()
                 process.exit()
                 break
         }
@@ -341,7 +372,7 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
         console.log(colors.Yellow, "Sorry for any inconvenience, this should soon by implemented. We appreciate your patience.")
         process.exit()
     }
-    console.log(colors.Blue, `Episode ${anime.episode_number+1} of ${anime.anime_id.replace("-", " ")} found.\n`)
+    console.log(colors.Blue, `Episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")} found.\n`)
     console.log(colors.Cyan, "1) Play")
     console.log(colors.Cyan, "2) Download")
     console.log(colors.Cyan, "3) Show Link")
@@ -384,13 +415,13 @@ async function main(){
                     config = temp
                     proxyAgent = new HttpsProxyAgent(config.proxy);
                     console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
+                    console.log(colors.Blue, "ANI-CLI-NPM \n")
                     console.log(colors.Yellow, "Config changed.")
                     break
                 } else if (exit_code === 2) {
                     temp = config
                     console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
+                    console.log(colors.Blue, "ANI-CLI-NPM \n")
                     console.log(colors.Yellow, "Config changes disregarded.")
                     break
                 }
