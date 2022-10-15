@@ -1,6 +1,6 @@
 {
   "name": "ani-cli-npm",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "ani-cli tool rewritten as npm package",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,6 @@
     "https-proxy-agent": "^5.0.1",
     "open": "^8.4.0",
     "simple-input": "^1.0.1",
-    "vlc-simple-player": "^0.5.1"
+    "vlc-simple-player": "github:mxkacsa/vlc-simple-player#process-close-exception-fix"
   }
 }
