@@ -276,18 +276,13 @@ async function get_video_quality_m3u8(){
     console.log(colors.Red, "Not sure how you even got to this function? Its not implemented yet.")
 }
 
-
-async function play(link, anime, player="VLC"){
-    console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
-    if (player === "VLC"){
-        console.log(colors.Yellow, "Loading VLC... ")
-        let player = new VLC(link)
-        console.log(colors.Yellow, "Playing video.\n")
-        console.log("VLC;")
+async function post_play(link, anime, player="VLC"){
+    while (true){
+        console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
         console.log(colors.Cyan, "1) Show Link")
         console.log(colors.Cyan, "2) Next Episode")
-        console.log(colors.Cyan, "3) Quit")
+        console.log(colors.Cyan, "3) Prev Episode")
+        console.log(colors.Cyan, "4) Quit")
         choice = parseInt(await input("select;"))
         switch (choice){
             case 1:
@@ -296,66 +291,29 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
                 console.log(colors.Yellow, "Link: "+link)
                 break
             case 2:
-                link = await get_video_link(anime.episodes[anime.episode_number+1])
+                if (anime.episode_number > anime.episodes.length-2){
+                    console.clear()
+                    console.log(colors.Red, "Damn, all out of episodes?")
+                    break
+                }
+                anime.episode_number += 1
+                link = await get_video_link(anime.episodes[anime.episode_number])
                 await play(link, anime, config.player)
                 process.exit()
                 break
+            //EVEN MORE NEEDLESS QUIT STATEMENTS!!!!!!
             case 3:
-                console.clear()
-                await main()
-                process.exit()
-                break
-        }
-        console.log(colors.Cyan, "1) Next Episode")
-        console.log(colors.Cyan, "2) Quit")
-        choice = parseInt(await input("select;"))
-        switch (choice){
-            case 1:
-                link = await get_video_link(anime.episodes[anime.episode_number+1])
+                if (anime.episode_number < 2){
+                    console.clear()
+                    console.log(colors.Red, "Error; Episode 0 is only available for premium members")
+                    break
+                }
+                anime.episode_number -= 1
+                link = await get_video_link(anime.episodes[anime.episode_number])
                 await play(link, anime, config.player)
                 process.exit()
                 break
-            case 2:
-                console.clear()
-                await main()
-                process.exit()
-                break
-        }
-    }else if (player === "BROWSER"){
-        console.log(colors.Yellow, "Opening video in browser... ")
-        open(link)
-        console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
-        console.log(colors.Cyan, "1) Show Link")
-        console.log(colors.Cyan, "2) Next Episode")
-        console.log(colors.Cyan, "3) Quit")
-        choice = parseInt(await input("select;"))
-        switch (choice){
-            case 1:
-                console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
-                console.log(colors.Yellow, "Link: "+link)
-                break
-            case 2:
-                link = await get_video_link(anime.episodes[anime.episode_number+1])
-                await play(link, anime, config.player)
-                process.exit()
-                break
-            case 3:
-                console.clear()
-                await main()
-                process.exit()
-                break
-        }
-        console.log(colors.Cyan, "1) Next Episode")
-        console.log(colors.Cyan, "2) Quit")
-        choice = parseInt(await input("select;"))
-        switch (choice){
-            case 1:
-                link = await get_video_link(anime.episodes[anime.episode_number+1])
-                await play(link, anime, config.player)
-                process.exit()
-                break
-            case 2:
+            case 4:
                 console.clear()
                 await main()
                 process.exit()
@@ -364,10 +322,28 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
     }
 }
 
+async function play(link, anime, player="VLC"){
+    console.clear()
+    console.log(colors.Blue, "ANI-CLI-NPM \n")
+    if (player === "VLC"){
+        console.log(colors.Yellow, "Loading VLC... ")
+        let player = new VLC(link)
+        await post_play(link, anime)
+        process.exit()
+
+
+    }else if (player === "BROWSER"){
+        console.log(colors.Yellow, "Opening video in browser... ")
+        open(link)
+        await post_play(link, anime, player)
+        process.exit()
+    }
+}
+
 
 async function search(){
     console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
+    console.log(colors.Blue, "ANI-CLI-NPM \n")
     console.log(colors.Magenta, "Search...")
     let choice = await input("")
     let anime = await process_search(choice)
@@ -377,7 +353,7 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
     console.log(colors.Blue, "Indexing video...")
     let link = await get_video_link(anime.episodes[anime.episode_number])
     console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
+    console.log(colors.Blue, "ANI-CLI-NPM \n")
     if (!link){
         console.log(colors.Red, "Np link for this episode found?")
         console.log(colors.Yellow, "^ at current this is due to not all of the required video repos being implemented.")
