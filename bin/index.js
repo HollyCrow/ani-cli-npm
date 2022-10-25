@@ -171,11 +171,11 @@ async function download(url, name){
     console.log(colors.Red, "Feature not implemented yet. Sorry for any inconvenience.\nIf you need to download a video, request the link, then download it via your internet browser of choice.")
 }
 
-async function selection(options, prompt){
+async function selection(options, prompt, extra_options = []){
     let selection = 0
-    while (!(selection <= options && selection > 1)){
+    while (true){
         selection = (await input(prompt))
-        if (selection <= options && selection >= 1){
+        if ((selection <= options && selection >= 1) || extra_options.includes(selection)){
             break
         }
         console.log(colors.Red,`Please input a valid option.`)
@@ -268,25 +268,23 @@ async function generate_link(provider, id){
     }
 }
 
-async function get_video_quality_m3u8(){
-    console.log(colors.Red, "Not sure how you even got to this function? Its not implemented yet.")
-}
-
 async function post_play(link, anime, player="VLC"){
     while (true){
         console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
-        console.log(colors.Cyan, "1) Show Link")
-        console.log(colors.Cyan, "2) Next Episode")
-        console.log(colors.Cyan, "3) Prev Episode")
-        console.log(colors.Cyan, "4) Quit")
-        choice = parseInt(await input("select;"))
+        console.log(colors.Cyan, "1/l) Show Link")
+        console.log(colors.Cyan, "2/n) Next Episode")
+        console.log(colors.Cyan, "3/p) Prev Episode")
+        console.log(colors.Cyan, "4/q) Quit")
+        choice = (await selection(4, "select;", ["l", "n", "p", "q"]))
         switch (choice){
-            case 1:
+            case "l":
+            case "1":
                 console.clear()
                 console.log(colors.Blue, "ANI-CLI-NPM \n")
                 console.log(colors.Yellow, "Link: "+link)
                 break
-            case 2:
+            case "n":
+            case "2":
                 if (anime.episode_number > anime.episodes.length-2){
                     console.clear()
                     console.log(colors.Red, "Damn, all out of episodes?")
@@ -298,7 +296,8 @@ async function post_play(link, anime, player="VLC"){
                 process.exit()
                 break
             //EVEN MORE NEEDLESS QUIT STATEMENTS!!!!!!
-            case 3:
+            case "p":
+            case "3":
                 if (anime.episode_number < 2){
                     console.clear()
                     console.log(colors.Red, "Error; Episode 0 is only available for premium members")
@@ -309,7 +308,8 @@ async function post_play(link, anime, player="VLC"){
                 await play(link, anime, config.player)
                 process.exit()
                 break
-            case 4:
+            case "q":
+            case "4":
                 console.clear()
                 await main()
                 process.exit()
@@ -359,22 +359,26 @@ async function search(){
     if (link.includes("animixplay.to")){
         console.log(colors.Red, "Warning; VLC compatability for animix.to is currently shaky at best. It is advised to change player to browser in conf")
     }
-    console.log(colors.Cyan, "1) Play")
-    console.log(colors.Cyan, "2) Download")
-    console.log(colors.Cyan, "3) Show Link")
-    console.log(colors.Cyan, "4) quit")
-    choice = parseInt(await input("select;"))
+    console.log(colors.Cyan, "1/p) Play")
+    console.log(colors.Cyan, "2/d) Download")
+    console.log(colors.Cyan, "3/l) Show Link")
+    console.log(colors.Cyan, "4/q) quit")
+    choice = (await selection(4, "select;", "q", "d", "l", "q"))
     switch (choice){
-        case 1:
+        case "p":
+        case "1":
             await play(link, anime, config.player)
             break
-        case 2:
+        case "d":
+        case "2":
             download(link, anime.anime_id+anime.episode_number+".mp4")
             break
-        case 3:
+        case "l":
+        case "3":
             console.log(colors.Yellow, "Link: "+link)
             break
-        case 4:
+        case "q":
+        case "4":
             await main()
             process.exit()
     }
@@ -384,16 +388,17 @@ async function search(){
 console.clear()
 console.log(colors.Blue, "Welcome to Ani-Cli-npm")
 async function main(){
-    console.log(colors.Cyan, "1) Search")
-    console.log(colors.Cyan, "2) config")
-    console.log(colors.Cyan, "3) quit")
-    let choice = parseInt(await input("select;"))
-
+    console.log(colors.Cyan, "1/s) Search")
+    console.log(colors.Cyan, "2/c) config")
+    console.log(colors.Cyan, "3/q) quit")
+    let choice = await selection(3, "select;", ["s", "c", "q"])
     switch (choice){
-        case 1:
+        case "s":
+        case "1":
             await search()
             break
-        case 2:
+        case "c":
+        case "2":
             let temp = structuredClone(config);
             let exit_code;
             while (true) {
@@ -415,6 +420,7 @@ async function main(){
             }
             await main()
             break
+        case "q":
         case 3:
             console.log(colors.Black, "Exiting...")
             process.exit()
