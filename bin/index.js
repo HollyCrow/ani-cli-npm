@@ -43,8 +43,6 @@ const HttpsProxyAgent = require('https-proxy-agent');
 let proxyAgent = new HttpsProxyAgent(config.proxy);
 
 
-
-
 async function config_(temp){
     console.clear()
 console.log(colors.Blue, "ANI-CLI-NPM \n")
@@ -82,14 +80,12 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
     }
 }
 
-
 async function input(message){
     if (message){
         console.log(colors.Magenta,message)
     }
     return await prompt(">")
 }
-
 
 async function curl(url, method="GET"){
     try{
@@ -125,12 +121,10 @@ async function curl(url, method="GET"){
 
 }
 
-
 function matchRuleShort(str, rule) {
     let escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
 }
-
 
 async function search_anime(search){
     let filter = "*<ahref=\"/category/*\"title=\"*\">"
@@ -151,7 +145,6 @@ async function search_anime(search){
 
     return lines
 }
-
 
 async function episode_list(anime_id){
     let html = (await curl(base_url+"/v1/"+anime_id)).split("\n")
@@ -174,11 +167,9 @@ async function episode_list(anime_id){
     return json
 }
 
-
 async function download(url, name){
     console.log(colors.Red, "Feature not implemented yet. Sorry for any inconvenience.\nIf you need to download a video, request the link, then download it via your internet browser of choice.")
 }
-
 
 async function selection(options, prompt){
     let selection = 0
@@ -191,7 +182,6 @@ async function selection(options, prompt){
     }
     return selection
 }
-
 
 async function process_search(query) {
     console.log(colors.Yellow, "Searching: "+query)
@@ -220,14 +210,15 @@ async function process_search(query) {
     }
 }
 
-
 async function get_video_link(episode_dpage){
     let id = episode_dpage.replace("//gogohd.net/streaming.php?id=","")
     id = id.slice(0, id.indexOf("="))
-
-    return await generate_link(1,id)
+    let link = await generate_link(1,id)
+    if (!link){
+        link = await generate_link(2,id)
+    }
+    return link
 }
-
 
 async function generate_link(provider, id){
     let html = ""
@@ -255,22 +246,27 @@ async function generate_link(provider, id){
             post = post.slice(post.indexOf(",\"data\":[{\"file\":\"")+18, post.length)
             post = post.slice(0, post.indexOf("\"")).replaceAll("\\/","/")
             return post
-        /*case 2:
+        case 2:
             provider_name = 'Animixplay'
-            console.log(`${base_url}/api/live/${"TkRBMk9EVT1MVFhzM0dyVTh3ZTlPVGtSQk1rOUVWVDA9"}`)
-            console.log(colors.Yellow, `Fetching ${provider_name} links...`)
-            let refr="$base_url"
-            let links = []
-            html = (await curl(`${base_url}/api/live/${"Some variable?"}`)).split("\n") // this needs fixed for alot of bigger titles to work.
-            for (x in html){
-                console.log(html[x])
-            }
-*/
+            let buffer = new Buffer(id)
+            let enc_id = buffer.toString("base64")
+            buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
+            let ani_id = buffer.toString("base64")
+            return `${base_url}/api/live${ani_id}`
+
+        /*console.log(`${base_url}/api/live${id}`)
+        console.log(colors.Yellow, `Fetching ${provider_name} links...`)
+        /*let re="$base_url"
+        let links = []
+        html = (await curl(`${base_url}/api/live/${"Some variable?"}`)).split("\n") // this needs fixed for alot of bigger titles to work.
+        for (x in html){
+            console.log(html[x])
+        }*/
+
 
 
     }
 }
-
 
 async function get_video_quality_m3u8(){
     console.log(colors.Red, "Not sure how you even got to this function? Its not implemented yet.")
@@ -340,7 +336,6 @@ async function play(link, anime, player="VLC"){
     }
 }
 
-
 async function search(){
     console.clear()
     console.log(colors.Blue, "ANI-CLI-NPM \n")
@@ -361,6 +356,9 @@ async function search(){
         process.exit()
     }
     console.log(colors.Blue, `Episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")} found.\n`)
+    if (link.includes("animixplay.to")){
+        console.log(colors.Red, "Warning; VLC compatability for animix.to is currently shaky at best. It is advised to change player to browser in conf")
+    }
     console.log(colors.Cyan, "1) Play")
     console.log(colors.Cyan, "2) Download")
     console.log(colors.Cyan, "3) Show Link")
