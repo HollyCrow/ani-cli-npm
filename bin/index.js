@@ -363,7 +363,7 @@ async function search(){
     console.log(colors.Cyan, "2/d) Download")
     console.log(colors.Cyan, "3/l) Show Link")
     console.log(colors.Cyan, "4/q) quit")
-    choice = (await selection(4, "select;", "q", "d", "l", "q"))
+    choice = (await selection(4, "select;", "p", "d", "l", "q"))
     switch (choice){
         case "p":
         case "1":
