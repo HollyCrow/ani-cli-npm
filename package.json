@@ -26,6 +26,7 @@
   "dependencies": {
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.1",
+    "node-fetch": "^2.6.6",
     "open": "^8.4.0",
     "simple-input": "^1.0.1",
     "vlc-simple-player": "github:mxkacsa/vlc-simple-player#process-close-exception-fix"

@@ -13,7 +13,7 @@ process.emitWarning = (warning, ...args) => {
 
     return emitWarning(warning, ...args);
 };
-
+const fetch = require('node-fetch');
 const VLC = require('vlc-simple-player');
 const open = require("open")
 const prompt = require("simple-input");
@@ -87,8 +87,8 @@ async function input(message){
     return await prompt(">")
 }
 
-async function curl(url, method="GET", headers = false){
-    try{
+async function curl(url, method="GET", redirect = false){
+    //try{
         let response = await fetch(url, {
             //"agent": proxyAgent,
             "headers": {
@@ -98,18 +98,22 @@ async function curl(url, method="GET", headers = false){
             "referrerPolicy": "origin",
             "body": null,
             "method": method,
-            "proxy": "68.183.230.116:3951"
+            "redirect": 'follow',
+            "follow": 10,
         }).catch(async function(err) {
             console.warn(colors.Red, `Something went wrong connecting to ${url}.`);
             await search();
             process.exit()
-        });
-
-        return await response.text()
-    }catch{
+        })
+        if (redirect){
+            return response.url
+        }else{
+            return await response.text()
+        }
+    /*}catch{
         console.log(colors.Red, "Something went wrong in curl()")
         await main()
-    }
+    }*/
 
 }
 
