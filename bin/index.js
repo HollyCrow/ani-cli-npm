@@ -248,9 +248,8 @@ async function generate_link(provider, id){
             let enc_id = buffer.toString("base64")
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
-            let link = (await curl(`${base_url}/api/live${ani_id}`))
-            console.log(link)
-            process.exit()
+            //return (await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("x")[1]
+
             return `${base_url}/api/live${ani_id}`
 
         /*console.log(`${base_url}/api/live${id}`)
