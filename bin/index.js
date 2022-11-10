@@ -252,18 +252,6 @@ async function generate_link(provider, id){
             //return buffer.toString("utf-8") TODO m3u8 player
 
             return `${base_url}/api/live${ani_id}`
-
-        /*console.log(`${base_url}/api/live${id}`)
-        console.log(colors.Yellow, `Fetching ${provider_name} links...`)
-        /*let re="$base_url"
-        let links = []
-        html = (await curl(`${base_url}/api/live/${"Some variable?"}`)).split("\n") // this needs fixed for alot of bigger titles to work.
-        for (x in html){
-            console.log(html[x])
-        }*/
-
-
-
     }
 }
 
