@@ -87,9 +87,9 @@ async function input(message){
     return await prompt(">")
 }
 
-async function curl(url, method="GET"){
+async function curl(url, method="GET", headers = false){
     try{
-        await fetch(url, {
+        let response = await fetch(url, {
             //"agent": proxyAgent,
             "headers": {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0',
@@ -99,21 +99,13 @@ async function curl(url, method="GET"){
             "body": null,
             "method": method,
             "proxy": "68.183.230.116:3951"
-        }).then(function (response) {
-            return response.text();
-        }).then(function (html) {
-            fs.writeFileSync("./temp.txt", html, function(err) {
-                if(err) {
-                    return console.log(err);
-                }
-            });
         }).catch(async function(err) {
             console.warn(colors.Red, `Something went wrong connecting to ${url}.`);
             await search();
             process.exit()
         });
 
-        return fs.readFileSync("./temp.txt").toString()
+        return await response.text()
     }catch{
         console.log(colors.Red, "Something went wrong in curl()")
         await main()
@@ -252,6 +244,9 @@ async function generate_link(provider, id){
             let enc_id = buffer.toString("base64")
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
+            let link = (await curl(`${base_url}/api/live${ani_id}`))
+            console.log(link)
+            process.exit()
             return `${base_url}/api/live${ani_id}`
 
         /*console.log(`${base_url}/api/live${id}`)
@@ -426,6 +421,7 @@ async function main(){
             process.exit()
     }
 }
+
 
 main()
 
