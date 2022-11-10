@@ -248,7 +248,8 @@ async function generate_link(provider, id){
             let enc_id = buffer.toString("base64")
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
-            //return (await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("x")[1]
+            buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
+            //return buffer.toString("utf-8") TODO m3u8 player
 
             return `${base_url}/api/live${ani_id}`
 
