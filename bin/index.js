@@ -366,7 +366,7 @@ async function search(){
     }
     console.log(colors.Blue, `Episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")} found.\n`)
     if (link.includes("animixplay.to") && config.player === "VLC"){
-        console.log(colors.Red, "Warning; VLC compatability for animix.to is currently shaky at best. It is advised to change player to browser in conf")
+        console.log(colors.Red, "Warning; animix.to uses m3u8 playlists. Without custom plugins, VLC will not be able to play this file format. It is recomended to use another player for this show/film.")
     }
     console.log(colors.Cyan, "1/p) Play")
     console.log(colors.Cyan, "2/d) Download")
