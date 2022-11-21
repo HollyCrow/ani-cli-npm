@@ -52,9 +52,9 @@ npx ani-cli-npm@latest
 
 #### For configuring several of options about how the program works.
 
-#### Player     - Change which player is used to open the anime.
+#### Player     - Change which player is used to open the anime (default mpv).
 
-#### Prozy      - Proxy used for searching. This is not currently implemented and will not work.
+#### Proxy      - Proxy used for searching. This is not currently implemented and will not work.
 
 #### User agent - The user agent used to make requests to websites.
 
