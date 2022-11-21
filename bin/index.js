@@ -14,12 +14,10 @@ process.emitWarning = (warning, ...args) => {
     return emitWarning(warning, ...args);
 };
 const fetch = require('node-fetch');
-const VLC = require('vlc-simple-player');
+const PlayerController = require("media-player-controller")
 const open = require("open")
 const prompt = require("simple-input");
-const fs = require("fs");
-//const HttpsProxyAgent = require('https-proxy-agent');
-//const proxyAgent = new HttpsProxyAgent("68.183.230.116:3951");
+
 
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
@@ -34,7 +32,7 @@ const colors = {
     White: "\x1b[37m%s\x1b[0m"
 }
 let config = {
-    player: "VLC",
+    player: "MPV",
     proxy: "",
     user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
 }
@@ -57,13 +55,17 @@ console.log(colors.Blue, "ANI-CLI-NPM \n")
         case 1:
             console.log(colors.Cyan, `1) VLC (default)`)
             console.log(colors.Cyan, `2) Browser`)
-            let player = parseInt(await(input("New Player;")))
+            console.log(colors.Cyan, `3) MPV`)
+            let player = parseInt(await input("New Player;"))
             switch (player){
                 case 1:
                     temp.player = "VLC"
                     break
                 case 2:
                     temp.player = "BROWSER"
+                    break
+                case 3:
+                    temp.player = "MPV"
                     break
             }
             return temp,0
@@ -249,7 +251,7 @@ async function generate_link(provider, id){
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
             buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
-            //return buffer.toString("utf-8") TODO m3u8 player
+            
 
             return `${base_url}/api/live${ani_id}`
     }
@@ -262,8 +264,7 @@ async function post_play(link, anime, player="VLC"){
         console.log(colors.Cyan, "2/n) Next Episode")
         console.log(colors.Cyan, "3/p) Prev Episode")
         console.log(colors.Cyan, "4/q) Quit")
-        choice = (await selection(4, "select;", ["l", "n", "p", "q"]))
-        switch (choice){
+        switch (await selection(4, "select;", ["l", "n", "p", "q"])){
             case "l":
             case "1":
                 console.clear()
@@ -310,7 +311,14 @@ async function play(link, anime, player="VLC"){
     console.log(colors.Blue, "ANI-CLI-NPM \n")
     if (player === "VLC"){
         console.log(colors.Yellow, "Loading VLC... ")
-        let player = new VLC(link)
+        let player = new PlayerController({
+            app: 'vlc',
+            args: ['--fullscreen'],
+            media: link
+        });
+        await player.launch(err => {
+            if(err) return console.error(err.message);
+        });
         await post_play(link, anime)
         process.exit()
 
@@ -318,6 +326,18 @@ async function play(link, anime, player="VLC"){
     }else if (player === "BROWSER"){
         console.log(colors.Yellow, "Opening video in browser... ")
         open(link)
+        await post_play(link, anime, player)
+        process.exit()
+    }else if (player === "MPV"){
+        console.log(colors.Yellow, "Loading MPV... ")
+        let player = new PlayerController({
+            app: 'mpv',
+            args: ['--fullscreen'],
+            media: link
+        });
+        await player.launch(err => {
+            if(err) return console.error(err.message);
+        });
         await post_play(link, anime, player)
         process.exit()
     }
@@ -343,7 +363,7 @@ async function search(){
         process.exit()
     }
     console.log(colors.Blue, `Episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")} found.\n`)
-    if (link.includes("animixplay.to")){
+    if (link.includes("animixplay.to") && config.player === "VLC"){
         console.log(colors.Red, "Warning; VLC compatability for animix.to is currently shaky at best. It is advised to change player to browser in conf")
     }
     console.log(colors.Cyan, "1/p) Play")
@@ -370,6 +390,7 @@ async function search(){
             process.exit()
     }
 }
+
 
 
 console.clear()
