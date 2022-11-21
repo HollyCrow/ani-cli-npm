@@ -251,7 +251,9 @@ async function generate_link(provider, id){
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
             buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
-            
+            if (config.player === "MPV"){
+                return buffer.toString("utf-8") //TODO m3u8 player
+            }
 
             return `${base_url}/api/live${ani_id}`
     }
