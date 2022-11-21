@@ -37,8 +37,8 @@ let config = {
     user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
 }
 
-const HttpsProxyAgent = require('https-proxy-agent');
-let proxyAgent = new HttpsProxyAgent(config.proxy);
+//const HttpsProxyAgent = require('https-proxy-agent');
+//let proxyAgent = new HttpsProxyAgent(config.proxy);
 
 
 async function config_(temp){
@@ -415,7 +415,7 @@ async function main(){
                 temp, exit_code = await config_(temp)
                 if (exit_code === 1) {
                     config = temp
-                    proxyAgent = new HttpsProxyAgent(config.proxy);
+                    //proxyAgent = new HttpsProxyAgent(config.proxy);
                     console.clear()
                     console.log(colors.Blue, "ANI-CLI-NPM \n")
                     console.log(colors.Yellow, "Config changed.")
