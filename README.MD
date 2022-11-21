@@ -61,6 +61,7 @@ npx ani-cli-npm@latest
 
 ## Current limitations:
 
-### At present this program only has Xstreamcdn videos implemented, as such, there is a high liklyhood that many animes will not be available. This will soon be amended but for now you will need to stick to the animes that are available under Xstreamcdn.
 
-### This project is still very much under development, as such, there are quite a few bugs.
+### This project is still somewhat under development, as such, there are a few bugs you may run into. Feel free to open an issue on github, though there is a solid chance I am aware of it and just havn't gotten round to fixing it yet.
+
+## Happy watching :)
