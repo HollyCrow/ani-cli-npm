@@ -17,7 +17,20 @@ const fetch = require('node-fetch');
 const PlayerController = require("media-player-controller")
 const open = require("open")
 const prompt = require("simple-input");
+const getAppDataPath = require("appdata-path")
+const fs = require("fs")
 
+let config = {
+    player: "BROWSER",
+    proxy: "",
+    user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
+}
+
+try{
+    config = JSON.parse(fs.readFileSync(getAppDataPath()+"/ani-cli-npm.conf")) //getAppDataPath()
+}catch{
+    fs.writeFileSync(getAppDataPath()+"/ani-cli-npm.conf", JSON.stringify(config))
+}
 
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
@@ -31,11 +44,7 @@ const colors = {
     Cyan: "\x1b[36m%s\x1b[0m",
     White: "\x1b[37m%s\x1b[0m"
 }
-let config = {
-    player: "BROWSER",
-    proxy: "",
-    user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
-}
+
 
 //const HttpsProxyAgent = require('https-proxy-agent');
 //let proxyAgent = new HttpsProxyAgent(config.proxy);
@@ -429,6 +438,11 @@ async function main(){
                     console.log(colors.Yellow, "Config changes disregarded.")
                     break
                 }
+            }
+            try{
+                fs.writeFileSync(getAppDataPath()+"/ani-cli-npm.conf", JSON.stringify(config))
+            }catch{
+                console.log(colors.Red, "Error writing to .conf file.")
             }
             await main()
             break

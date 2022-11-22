@@ -1,6 +1,6 @@
 {
   "name": "ani-cli-npm",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "ani-cli tool rewritten as npm package",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "multiply": "bin/index.js"
   },
   "dependencies": {
+    "appdata-path": "^1.0.0",
     "media-player-controller": "^1.5.3",
     "node-fetch": "^2.6.6",
     "open": "^8.4.0",
