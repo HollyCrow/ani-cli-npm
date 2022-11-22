@@ -23,7 +23,8 @@ const fs = require("fs")
 let config = {
     player: "BROWSER",
     proxy: "",
-    user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
+    user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0",
+    most_recent: true
 }
 
 try{
@@ -279,7 +280,7 @@ async function generate_link(provider, id){
     }
 }
 
-async function post_play(link, anime, player="VLC"){
+async function post_play(link, anime){
     while (true){
         console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
         console.log(colors.Cyan, "1/l) Show Link")
@@ -302,7 +303,7 @@ async function post_play(link, anime, player="VLC"){
                 }
                 anime.episode_number += 1
                 link = await get_video_link(anime.episodes[anime.episode_number])
-                await play(link, anime, config.player)
+                await play(link, anime)
                 process.exit()
                 break
             //EVEN MORE NEEDLESS QUIT STATEMENTS!!!!!!
@@ -315,7 +316,7 @@ async function post_play(link, anime, player="VLC"){
                 }
                 anime.episode_number -= 1
                 link = await get_video_link(anime.episodes[anime.episode_number])
-                await play(link, anime, config.player)
+                await play(link, anime)
                 process.exit()
                 break
             case "q":
@@ -328,10 +329,10 @@ async function post_play(link, anime, player="VLC"){
     }
 }
 
-async function play(link, anime, player="VLC"){
+async function play(link, anime){
     console.clear()
     console.log(colors.Blue, "ANI-CLI-NPM \n")
-    if (player === "VLC"){
+    if (config.player === "VLC"){
         console.log(colors.Yellow, "Loading VLC... ")
         let player = new PlayerController({
             app: 'vlc',
@@ -345,12 +346,12 @@ async function play(link, anime, player="VLC"){
         process.exit()
 
 
-    }else if (player === "BROWSER"){
+    }else if (config.player === "BROWSER"){
         console.log(colors.Yellow, "Opening video in browser... ")
         open(link)
-        await post_play(link, anime, player)
+        await post_play(link, anime)
         process.exit()
-    }else if (player === "MPV"){
+    }else if (config.player === "MPV"){
         console.log(colors.Yellow, "Loading MPV... ")
         let player = new PlayerController({
             app: 'mpv',
@@ -360,7 +361,7 @@ async function play(link, anime, player="VLC"){
         await player.launch(err => {
             if(err) return console.error(err.message);
         });
-        await post_play(link, anime, player)
+        await post_play(link, anime)
         process.exit()
     }
 }
