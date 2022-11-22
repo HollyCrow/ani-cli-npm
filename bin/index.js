@@ -23,11 +23,21 @@ const fs = require("fs")
 let config = {
     player: "BROWSER",
     proxy: "",
-    user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
+    user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
 }
 
 try{
-    config = JSON.parse(fs.readFileSync(getAppDataPath()+"/ani-cli-npm.conf")) //getAppDataPath()
+    let config = JSON.parse(fs.readFileSync(getAppDataPath()+"/ani-cli-npm.conf")) //getAppDataPath()
+    if (!config.hasOwnProperty("player")){
+        config.player = "BROWSER"
+    }
+    if (!config.hasOwnProperty("user_agent")){
+        config.user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
+    }
+    if (!config.hasOwnProperty("proxy")){
+        config.user_agent = ""
+    }
+    fs.writeFileSync(getAppDataPath()+"/ani-cli-npm.conf", JSON.stringify(config))
 }catch{
     fs.writeFileSync(getAppDataPath()+"/ani-cli-npm.conf", JSON.stringify(config))
 }
@@ -52,7 +62,7 @@ const colors = {
 
 async function config_(temp){
     console.clear()
-console.log(colors.Blue, "ANI-CLI-NPM \n")
+    console.log(colors.Blue, "ANI-CLI-NPM \n")
     console.log(colors.Yellow, "Config:\n")
     console.log(colors.Cyan, `1) Player; ${temp.player}`)
     console.log(colors.Cyan, `2) Proxy; ${temp.proxy}`)
@@ -408,7 +418,9 @@ async function search(){
 console.clear()
 console.log(colors.Blue, "Welcome to Ani-Cli-npm")
 async function main(){
-    console.log(colors.Red, "Warning; if you do not have mpv video player installed, you will have to change your video player to either vlc or browser in config.\n")
+    if (config.player === "VLC"){
+        console.log(colors.Red, "Warning; if you do not have mpv video player installed, you will have to change your video player to either vlc or browser in config.\n")
+    }
     console.log(colors.Cyan, "1/s) Search")
     console.log(colors.Cyan, "2/c) config")
     console.log(colors.Cyan, "3/q) quit")
