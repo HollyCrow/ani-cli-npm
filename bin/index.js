@@ -24,24 +24,48 @@ let config = {
     player: "BROWSER",
     proxy: "",
     user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0",
-    most_recent: true
+    most_recent: {
+        episode_number: 0,
+        anime_id: "",
+        episodes: []
+    }
 }
 
-try{
-    let config = JSON.parse(fs.readFileSync(getAppDataPath()+"/ani-cli-npm.conf")) //getAppDataPath()
-    if (!config.hasOwnProperty("player")){
-        config.player = "BROWSER"
+
+function read_config(){
+    try{
+        try {
+            config = JSON.parse(fs.readFileSync(getAppDataPath() + "/ani-cli-npm.conf")) //getAppDataPath()
+            if (!config.hasOwnProperty("player")) {
+                config.player = "BROWSER"
+            }
+            if (!config.hasOwnProperty("user_agent")) {
+                config.user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
+            }
+            if (!config.hasOwnProperty("proxy")) {
+                config.user_agent = ""
+            }
+            if (!config.hasOwnProperty("most_recent")) {
+                config.most_recent = null
+            }
+            fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
+        } catch {
+            fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
+        }
+    }catch{
+        console.log(colors.Red, "Failed to read config file")
     }
-    if (!config.hasOwnProperty("user_agent")){
-        config.user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
-    }
-    if (!config.hasOwnProperty("proxy")){
-        config.user_agent = ""
-    }
-    fs.writeFileSync(getAppDataPath()+"/ani-cli-npm.conf", JSON.stringify(config))
-}catch{
-    fs.writeFileSync(getAppDataPath()+"/ani-cli-npm.conf", JSON.stringify(config))
 }
+
+function write_config(){
+    try{
+        fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
+    }catch{
+        console.log(colors.Red, "Failed to write to config file")
+    }
+}
+
+
 
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
@@ -139,7 +163,14 @@ async function curl(url, method="GET", redirect = false){
 
 }
 
-function matchRuleShort(str, rule) {
+async function _continue(){
+    let link = await get_video_link(config.most_recent.episodes[config.most_recent.episode_number])
+    await play(link, config.most_recent)
+    process.exit()
+}
+
+
+function RegexParse(str, rule) {
     let escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
 }
@@ -150,7 +181,7 @@ async function search_anime(search){
     let lines = []
     for (x in html){
         html[x] = html[x].replaceAll(/ /g,'').replaceAll(/\t/g,'')
-        if (matchRuleShort(html[x], filter)){
+        if (RegexParse(html[x], filter)){
             html[x] = html[x].slice(html[x].indexOf("/category/")+10);
             html[x] = html[x].slice(0, html[x].indexOf("\"title="));
             lines.push(html[x])
@@ -169,7 +200,7 @@ async function episode_list(anime_id){
     let lines = ""
 
     for (let x in html){
-        if(matchRuleShort(html[x], "*<div id=\"epslistplace\"*")){
+        if(RegexParse(html[x], "*<div id=\"epslistplace\"*")){
             lines = (html[x])
         }
     }
@@ -249,7 +280,7 @@ async function generate_link(provider, id){
             html = html.split("\n")
             let fb_id = ""
             for (x in html){
-                if (matchRuleShort(html[x], "*<li class=\"linkserver\" data-status=\"1\" data-video=\"https://fembed9hd.com/v/*")){
+                if (RegexParse(html[x], "*<li class=\"linkserver\" data-status=\"1\" data-video=\"https://fembed9hd.com/v/*")){
                     fb_id = html[x].slice(html[x].indexOf("/v/")+3, html[x].indexOf("\">X"))
                     break
                 }
@@ -282,6 +313,9 @@ async function generate_link(provider, id){
 
 async function post_play(link, anime){
     while (true){
+        config.most_recent = anime
+        write_config()
+
         console.log(colors.Yellow, `Playing episode ${anime.episode_number+1} of ${anime.anime_id.replaceAll("-", " ")}\n`)
         console.log(colors.Cyan, "1/l) Show Link")
         console.log(colors.Cyan, "2/n) Next Episode")
@@ -397,11 +431,11 @@ async function search(){
     switch (choice){
         case "p":
         case "1":
-            await play(link, anime, config.player)
+            await play(link, anime)
             break
         case "d":
         case "2":
-            download(link, anime.anime_id+anime.episode_number+".mp4")
+            await download(link, anime.anime_id+anime.episode_number+".mp4")
             break
         case "l":
         case "3":
@@ -415,24 +449,42 @@ async function search(){
 }
 
 
-
 console.clear()
-console.log(colors.Blue, "Welcome to Ani-Cli-npm")
+read_config()
+console.log(colors.Blue, "Welcome to Ani-Cli-npm\n")
+if (config.most_recent.episode_number !== 0){
+    console.log(colors.White, `Most recently played: ${config.most_recent.anime_id}, ep${config.most_recent.episode_number+1}`)
+}
 async function main(){
     if (config.player === "VLC"){
         console.log(colors.Red, "Warning; if you do not have mpv video player installed, you will have to change your video player to either vlc or browser in config.\n")
     }
-    console.log(colors.Cyan, "1/s) Search")
-    console.log(colors.Cyan, "2/c) config")
-    console.log(colors.Cyan, "3/q) quit")
-    let choice = await selection(3, "select;", ["s", "c", "q"])
+    console.log(colors.Cyan, "\n1/s) Search")
+    if (config.most_recent.episode_number !== 0){
+        console.log(colors.Cyan, "2/c) Continue")
+    }else{
+        console.log(colors.White, "2/c) Continue")
+    }
+    console.log(colors.Cyan, "3/C) Config")
+    console.log(colors.Cyan, "4/q) Quit")
+    let choice = await selection(3, "select;", ["s", "c", "C", "q"])
     switch (choice){
         case "s":
         case "1":
             await search()
             break
         case "c":
-        case "2":
+        case 2:
+            if (config.most_recent.episode_number !== 0){
+                await _continue()
+            }else{
+                console.log(colors.White, "No episodes watched recently")
+                await main()
+            }
+
+            break
+        case "C":
+        case "3":
             let temp = structuredClone(config);
             let exit_code;
             while (true) {
@@ -460,7 +512,7 @@ async function main(){
             await main()
             break
         case "q":
-        case 3:
+        case 4:
             console.log(colors.Black, "Exiting...")
             process.exit()
     }
