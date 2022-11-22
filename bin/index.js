@@ -474,7 +474,7 @@ async function main(){
             await search()
             break
         case "c":
-        case 2:
+        case "2":
             if (config.most_recent.episode_number !== 0){
                 await _continue()
             }else{
@@ -512,7 +512,7 @@ async function main(){
             await main()
             break
         case "q":
-        case 4:
+        case "4":
             console.log(colors.Black, "Exiting...")
             process.exit()
     }
