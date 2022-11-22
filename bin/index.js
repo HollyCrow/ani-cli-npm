@@ -32,7 +32,7 @@ const colors = {
     White: "\x1b[37m%s\x1b[0m"
 }
 let config = {
-    player: "MPV",
+    player: "BROWSER",
     proxy: "",
     user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0'
 }
@@ -251,11 +251,12 @@ async function generate_link(provider, id){
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
             buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
-            if (config.player === "MPV"){
-                return buffer.toString("utf-8") //TODO m3u8 player
+            if (config.player === "BROWSER"){
+                return `${base_url}/api/live${ani_id}`
             }
+                return buffer.toString("utf-8") //TODO m3u8 player
 
-            return `${base_url}/api/live${ani_id}`
+            
     }
 }
 
