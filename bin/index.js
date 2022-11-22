@@ -398,6 +398,7 @@ async function search(){
 console.clear()
 console.log(colors.Blue, "Welcome to Ani-Cli-npm")
 async function main(){
+    console.log(colors.Red, "Warning; if you do not have mpv video player installed, you will have to change your video player to either vlc or browser in config.\n")
     console.log(colors.Cyan, "1/s) Search")
     console.log(colors.Cyan, "2/c) config")
     console.log(colors.Cyan, "3/q) quit")
