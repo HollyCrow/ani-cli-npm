@@ -19,7 +19,10 @@ npx ani-cli-npm@latest
 ```
 pkg install nodejs
 ```
-#### - Run npx ani-cli-npm@latest
+#### - Run 
+```
+npx ani-cli-npm@latest
+```
 ##### Note: At preset (1.0.6), you will need to change the player to browser, and will have to do any downloads through your browser of choice.
 
 ### Linux:
