@@ -401,8 +401,6 @@ async function play(link, anime){
 }
 
 async function search(){
-    console.clear()
-    console.log(colors.Blue, "ANI-CLI-NPM \n")
     console.log(colors.Magenta, "Search...")
     let choice = await input("")
     let anime = await process_search(choice)
