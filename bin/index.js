@@ -19,6 +19,10 @@ const open = require("open")
 const prompt = require("simple-input");
 const getAppDataPath = require("appdata-path")
 const fs = require("fs")
+const downloadsFolder = require('downloads-folder');
+const dl = require("download-file-with-progressbar");
+
+
 
 let config = {
     player: "BROWSER",
@@ -28,7 +32,8 @@ let config = {
         episode_number: 0,
         anime_id: "",
         episodes: []
-    }
+    },
+    download_folder: downloadsFolder()
 }
 
 
@@ -36,18 +41,11 @@ function read_config(){
     try{
         try {
             config = JSON.parse(fs.readFileSync(getAppDataPath() + "/ani-cli-npm.conf")) //getAppDataPath()
-            if (!config.hasOwnProperty("player")) {
-                config.player = "BROWSER"
-            }
-            if (!config.hasOwnProperty("user_agent")) {
-                config.user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0"
-            }
-            if (!config.hasOwnProperty("proxy")) {
-                config.user_agent = ""
-            }
-            if (!config.hasOwnProperty("most_recent")) {
-                config.most_recent = null
-            }
+            if (!config.hasOwnProperty("player")) config.player = "BROWSER";
+            if (!config.hasOwnProperty("user_agent")) config.user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0";
+            if (!config.hasOwnProperty("proxy")) config.user_agent = "";
+            if (!config.hasOwnProperty("most_recent")) config.most_recent = null;
+            if(!config.download_folder) config.download_folder = downloadsFolder();
             fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
         } catch {
             fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
@@ -216,8 +214,28 @@ async function episode_list(anime_id){
     return json
 }
 
-async function download(url, name){
-    console.log(colors.Red, "Feature not implemented yet. Sorry for any inconvenience.\nIf you need to download a video, request the link, then download it via your internet browser of choice.")
+function download(link, file_name){
+    console.log(colors.Red, "Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link.")
+    let option = {
+        filename: link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name,
+        dir: config.download_folder,
+        onDone: (info)=>{
+            console.log(colors.Green, `\n -- Download finished -- \nLocation: ${info.path}\nSize: ${Math.round(info.size/100000)*10} Bytes`);
+            return 0;
+        },
+        onError: (err) => {
+            console.log(colors.Red, 'error', err);
+        },
+        onProgress: (curr, total) => {
+            process.stdout.clearLine(0);
+            process.stdout.cursorTo(0);
+            process.stdout.write(('\x1b[32m -- progress '+ (curr / total * 100).toFixed(2) + '% -- \x1b[0m'));
+        },
+    }
+    console.log(colors.White, `${option.dir}/${option.filename}`)
+
+    return dl(link, option);
+
 }
 
 async function selection(options, prompt, extra_options = []){
@@ -320,8 +338,9 @@ async function post_play(link, anime, player = null){
         console.log(colors.Cyan, "1/l) Show Link")
         console.log(colors.Cyan, "2/n) Next Episode")
         console.log(colors.Cyan, "3/p) Prev Episode")
-        console.log(colors.Cyan, "4/q) Quit")
-        switch (await selection(4, "select;", ["l", "n", "p", "q"])){
+        console.log(colors.Cyan, "4/d) Download")
+        console.log(colors.Cyan, "5/q) Quit")
+        switch (await selection(5, "select;", ["l", "n", "p", "d", "q"])){
             case "l":
             case "1":
                 console.log(colors.Yellow, "Link: "+link)
@@ -349,8 +368,13 @@ async function post_play(link, anime, player = null){
                 await play(link, anime, player)
                 process.exit()
                 break
-            case "q":
+            case "d":
             case "4":
+                console.log(colors.Yellow, "Beware of the dysfunctional await clause.")
+                await download(link, anime.anime_id+(anime.episode_number+1)+".mp4")
+                break
+            case "q":
+            case "5":
                 console.clear()
                 await main()
                 process.exit()
@@ -446,7 +470,7 @@ async function search(){
             break
         case "d":
         case "2":
-            await download(link, anime.anime_id+anime.episode_number+".mp4")
+            await download(link, anime.anime_id+(anime.episode_number+1)+".mp4")
             break
         case "l":
         case "3":
