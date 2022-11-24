@@ -311,7 +311,7 @@ async function generate_link(provider, id){
     }
 }
 
-async function post_play(link, anime){
+async function post_play(link, anime, player = null){
     while (true){
         config.most_recent = anime
         write_config()
@@ -337,7 +337,7 @@ async function post_play(link, anime){
                 }
                 anime.episode_number += 1
                 link = await get_video_link(anime.episodes[anime.episode_number])
-                await play(link, anime)
+                await play(link, anime, player)
                 process.exit()
                 break
             //EVEN MORE NEEDLESS QUIT STATEMENTS!!!!!!
@@ -350,7 +350,7 @@ async function post_play(link, anime){
                 }
                 anime.episode_number -= 1
                 link = await get_video_link(anime.episodes[anime.episode_number])
-                await play(link, anime)
+                await play(link, anime, player)
                 process.exit()
                 break
             case "q":
@@ -363,20 +363,35 @@ async function post_play(link, anime){
     }
 }
 
-async function play(link, anime){
+async function play(link, anime, player){
     console.clear()
     console.log(colors.Blue, "ANI-CLI-NPM \n")
     if (config.player === "VLC"){
-        console.log(colors.Yellow, "Loading VLC... ")
-        let player = new PlayerController({
-            app: 'vlc',
-            args: ['--fullscreen'],
-            media: link
-        });
-        await player.launch(err => {
-            if(err) return console.error(err.message);
-        });
-        await post_play(link, anime)
+        if (!player){
+            console.log(colors.Yellow, "Loading VLC... ")
+            player = new PlayerController({
+                app: 'vlc',
+                args: ['--fullscreen'],
+                media: link
+            });
+            await player.launch(err => {
+                if (err) return console.error(err.message);
+            });
+        }else{
+            player.quit()
+            console.log(colors.Yellow, "Loading VLC... ")
+            player = new PlayerController({
+                app: 'vlc',
+                args: ['--fullscreen'],
+                media: link
+            });
+            await player.launch(err => {
+                if (err) return console.error(err.message);
+            });
+        }
+        console.log(link)
+
+        await post_play(link, anime, player)
         process.exit()
 
 
@@ -386,16 +401,22 @@ async function play(link, anime){
         await post_play(link, anime)
         process.exit()
     }else if (config.player === "MPV"){
-        console.log(colors.Yellow, "Loading MPV... ")
-        let player = new PlayerController({
-            app: 'mpv',
-            args: ['--fullscreen'],
-            media: link
-        });
-        await player.launch(err => {
-            if(err) return console.error(err.message);
-        });
-        await post_play(link, anime)
+        if (!player){
+            console.log(colors.Yellow, "Loading MPV... ")
+            player = new PlayerController({
+                app: 'mpv',
+                args: ['--fullscreen'],
+                media: link
+            });
+            await player.launch(err => {
+                if (err) return console.error(err.message);
+            });
+        }else{
+            player.load(link)
+        }
+        console.log(link)
+
+        await post_play(link, anime, player)
         process.exit()
     }
 }
@@ -429,7 +450,7 @@ async function search(){
     switch (choice){
         case "p":
         case "1":
-            await play(link, anime)
+            await play(link, anime, null)
             break
         case "d":
         case "2":
