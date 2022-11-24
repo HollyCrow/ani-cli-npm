@@ -90,8 +90,9 @@ async function config_(temp){
     console.log(colors.Cyan, `1) Player; ${temp.player}`)
     console.log(colors.Cyan, `2) Proxy; ${temp.proxy}`)
     console.log(colors.Cyan, `3) User agent; ${temp.user_agent}`)
-    console.log(colors.Cyan, "4) Save and exit")
-    console.log(colors.Cyan, "5) Exit without saving changes")
+    console.log(colors.Cyan, `4) Download folder; ${config.download_folder}`)
+    console.log(colors.Cyan, "5) Save and exit")
+    console.log(colors.Cyan, "6) Exit without saving changes")
     let choice = parseInt(await input(""));
     switch (choice){
         case 1:
@@ -118,8 +119,11 @@ async function config_(temp){
             temp.user_agent = await(input("New User agent;"))
             return temp, 0
         case 4:
-            return temp, 1
+            temp.download_folder = await(input("New download folder: "))
+            return temp, 0
         case 5:
+            return temp, 1
+        case 6:
             return temp, 2
     }
 }
@@ -372,6 +376,7 @@ async function post_play(link, anime, player = null){
             case "4":
                 console.log(colors.Yellow, "Beware of the dysfunctional await clause.")
                 await download(link, anime.anime_id+(anime.episode_number+1)+".mp4")
+                post_play(link, anime, player)
                 break
             case "q":
             case "5":
