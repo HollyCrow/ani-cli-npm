@@ -324,14 +324,11 @@ async function post_play(link, anime, player = null){
         switch (await selection(4, "select;", ["l", "n", "p", "q"])){
             case "l":
             case "1":
-                console.clear()
-                console.log(colors.Blue, "ANI-CLI-NPM \n")
                 console.log(colors.Yellow, "Link: "+link)
                 break
             case "n":
             case "2":
                 if (anime.episode_number > anime.episodes.length-2){
-                    console.clear()
                     console.log(colors.Red, "Damn, all out of episodes?")
                     break
                 }
@@ -344,7 +341,6 @@ async function post_play(link, anime, player = null){
             case "p":
             case "3":
                 if (anime.episode_number < 2){
-                    console.clear()
                     console.log(colors.Red, "Error; Episode 0 is only available for premium members")
                     break
                 }
@@ -389,7 +385,6 @@ async function play(link, anime, player){
                 if (err) return console.error(err.message);
             });
         }
-        console.log(link)
 
         await post_play(link, anime, player)
         process.exit()
@@ -414,7 +409,6 @@ async function play(link, anime, player){
         }else{
             player.load(link)
         }
-        console.log(link)
 
         await post_play(link, anime, player)
         process.exit()
@@ -430,8 +424,6 @@ async function search(){
 
     console.log(colors.Blue, "Indexing video...")
     let link = await get_video_link(anime.episodes[anime.episode_number])
-    console.clear()
-    console.log(colors.Blue, "ANI-CLI-NPM \n")
     if (!link){
         console.log(colors.Red, "Np link for this episode found?")
         console.log(colors.Yellow, "^ at current this is due to not all of the required video repos being implemented.")
@@ -446,7 +438,7 @@ async function search(){
     console.log(colors.Cyan, "2/d) Download")
     console.log(colors.Cyan, "3/l) Show Link")
     console.log(colors.Cyan, "4/q) quit")
-    choice = (await selection(4, "select;", "p", "d", "l", "q"))
+    choice = (await selection(4, "select;", ["p", "d", "l", "q"]))
     switch (choice){
         case "p":
         case "1":
@@ -459,6 +451,24 @@ async function search(){
         case "l":
         case "3":
             console.log(colors.Yellow, "Link: "+link)
+            console.log(colors.Cyan, "\n1/p) Play")
+            console.log(colors.Cyan, "2/d) Download")
+            console.log(colors.Cyan, "3/q) quit")
+            choice = (await selection(3, "select;", ["p", "d", "q"]))
+            switch (choice){
+                case "p":
+                case "1":
+                    await play(link, anime, null)
+                    break
+                case "d":
+                case "2":
+                    await download(link, anime.anime_id+anime.episode_number+".mp4")
+                    break
+                case "q":
+                case "3":
+                    await main()
+                    process.exit()
+            }
             break
         case "q":
         case "4":
@@ -539,4 +549,3 @@ async function main(){
 
 
 main()
-
