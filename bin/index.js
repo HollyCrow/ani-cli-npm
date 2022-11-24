@@ -520,7 +520,7 @@ async function main(){
     }
     console.log(colors.Cyan, "3/C) Config")
     console.log(colors.Cyan, "4/q) Quit")
-    let choice = await selection(3, "select;", ["s", "c", "C", "q"])
+    let choice = await selection(4, "select;", ["s", "c", "C", "q"])
     switch (choice){
         case "s":
         case "1":
