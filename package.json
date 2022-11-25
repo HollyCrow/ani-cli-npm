@@ -1,6 +1,6 @@
 {
   "name": "ani-cli-npm",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "ani-cli tool rewritten as npm package",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,6 @@
   "dependencies": {
     "appdata-path": "^1.0.0",
     "download-file-with-progressbar": "^1.2.3",
-    "downloads-folder": "^3.0.3",
     "media-player-controller": "^1.5.3",
     "node-fetch": "^2.6.6",
     "open": "^8.4.0",

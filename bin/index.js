@@ -19,7 +19,6 @@ const open = require("open")
 const prompt = require("simple-input");
 const getAppDataPath = require("appdata-path")
 const fs = require("fs")
-const downloadsFolder = require('downloads-folder');
 const dl = require("download-file-with-progressbar");
 
 
@@ -33,7 +32,8 @@ let config = {
         anime_id: "",
         episodes: []
     },
-    download_folder: downloadsFolder()
+    download_folder: "./",
+    download_progress_bar: true
 }
 
 
@@ -45,7 +45,8 @@ function read_config(){
             if (!config.hasOwnProperty("user_agent")) config.user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0";
             if (!config.hasOwnProperty("proxy")) config.user_agent = "";
             if (!config.hasOwnProperty("most_recent")) config.most_recent = null;
-            if(!config.download_folder) config.download_folder = downloadsFolder();
+            if (!config.hasOwnProperty("download_folder")) config.download_folder = "./";
+            if (!config.hasOwnProperty("download_progress_bar")) config.download_progress_bar = true;
             fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
         } catch {
             fs.writeFileSync(getAppDataPath() + "/ani-cli-npm.conf", JSON.stringify(config))
@@ -219,7 +220,7 @@ async function episode_list(anime_id){
 }
 
 function download(link, file_name){
-    console.log(colors.Red, "Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link.")
+    if (link.includes("m3u8")) console.log(colors.Red, "Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link.");
     let option = {
         filename: link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name,
         dir: config.download_folder,
@@ -233,7 +234,12 @@ function download(link, file_name){
         onProgress: (curr, total) => {
             process.stdout.clearLine(0);
             process.stdout.cursorTo(0);
-            process.stdout.write(('\x1b[32m -- progress '+ (curr / total * 100).toFixed(2) + '% -- \x1b[0m'));
+            if (config.download_progress_bar){
+                process.stdout.write("\x1b[32m -- "+(curr / total * 100).toFixed(2)+"% "+"#". repeat(Math.ceil((curr / total)*(process.stdout.columns-20)))+"~".repeat(Math.ceil((process.stdout.columns-20) - (curr / total)*(process.stdout.columns-20)))+" -- \x1b[0m")
+
+            }else{
+                process.stdout.write(('\x1b[32m -- progress '+ (curr / total * 100).toFixed(2) + '% -- \x1b[0m'));
+            }
         },
     }
     console.log(colors.White, `${option.dir}/${option.filename}`)
