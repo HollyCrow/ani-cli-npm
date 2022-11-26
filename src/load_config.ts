@@ -1,17 +1,8 @@
 import * as fs from "fs"
 //import chalk from 'chalk';
 
+import {config_interface} from "./interfaces";
 
-interface config_interface{
-    player: string,
-    proxy: string,
-    user_agent: string,
-    most_recent: {
-        episode_number: number,
-        anime_id: string
-    }
-    download_folder:string
-}
 
 function write_config(conf_file:string, config:object){
     try{

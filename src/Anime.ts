@@ -1,21 +1,18 @@
 import {curl} from "./curl";
 import {RegexParse} from "./regex";
-
+import {generate_link} from "./generate_link";
+import {config_interface} from "./interfaces";
 // const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
 
 class Anime{
     id: string = ""
-    current_episodes: number = 0
     episode_list: string[] = []
 
-    async init(anime_id: string){
-
+    async init(anime_id: string){ // init mate
         this.id = anime_id
-
         let html = (await(curl(base_url+"/v1/"+anime_id))).split("\n")
         let lines = ""
-
         for (let x in html){
             if(RegexParse(html[x], "*<div id=\"epslistplace\"*")){
                 lines = (html[x])
@@ -29,6 +26,17 @@ class Anime{
         }
 
         return 0;
+    }
+
+    async get_episode_link(episode:number, config:config_interface){
+        let episode_dpage = this.episode_list[episode]
+        let id = episode_dpage.replace("//gogohd.net/streaming.php?id=","")
+        id = id.slice(0, id.indexOf("="))
+        let link = await generate_link(1,id, config)
+        if (!link){
+            link = await generate_link(2,id, config)
+        }
+        return link
     }
 
 }
