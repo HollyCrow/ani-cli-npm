@@ -27,7 +27,6 @@ class Anime{
         for (const value of Object.entries(json) as unknown as string[]) {
             this.episode_list.push(value[1])
         }
-console.log(this.episode_list)
 
         return 0;
     }
