@@ -3,16 +3,26 @@ import * as fs from "fs"
 
 import {config_interface} from "./interfaces";
 
-
-function write_config(conf_file:string, config:object){
+function make_config_dir(cache_dir:string, debug:boolean){
     try{
-        fs.writeFileSync(conf_file, JSON.stringify(config))
+        if (!fs.existsSync(cache_dir+"/ani-cli-npm/")) fs.mkdirSync(cache_dir+"/ani-cli-npm");
+    }catch{
+        if (debug){
+            console.log("Failed to make cache dir")
+        }
+    }
+}
+
+function write_config(cache_dir:string, config:config_interface){
+    try{
+        make_config_dir(cache_dir, config.debug_mode)
+        fs.writeFileSync(cache_dir+"/ani-cli-npm/config.conf", JSON.stringify(config))
     }catch{
         console.log(("Failed to write to config file."))
     }
 }
 
-function load_config(conf_file: string){
+function load_config(cache_dir: string){
     let config: config_interface = {
         player: "BROWSER",
         proxy: "",
@@ -21,11 +31,12 @@ function load_config(conf_file: string){
             episode_number: 0,
             anime_id: ""
         },
-        download_folder: "."
+        download_folder: ".",
+        debug_mode: false
     }
-    if (fs.existsSync(conf_file)){
+    if (fs.existsSync(cache_dir+"/ani-cli-npm/config.conf")){
         // @ts-ignore
-        let tmp = JSON.parse(fs.readFileSync(conf_file), "utf8")
+        let tmp = JSON.parse(fs.readFileSync(cache_dir+"/ani-cli-npm/config.conf"), "utf8")
 
         // @ts-ignore
         if (tmp.player !== undefined) config.player = tmp.player;
@@ -42,9 +53,12 @@ function load_config(conf_file: string){
         }
         // @ts-ignore
         if (tmp.download_folder !== undefined) config.download_folder = tmp.download_folder;
+        // @ts-ignore
+        if (tmp.debug_mode !== undefined) config.debug_mode = tmp.debug_mode;
+
     }
 
-    write_config(conf_file, config)
+    write_config(cache_dir, config)
 
     return config
 }

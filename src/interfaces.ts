@@ -6,7 +6,8 @@ interface config_interface{
         episode_number: number,
         anime_id: string
     }
-    download_folder:string
+    download_folder:string,
+    debug_mode: boolean
 }
 
 
