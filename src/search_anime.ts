@@ -1,5 +1,7 @@
 import {RegexParse} from "./regex";
 import {curl} from "./curl";
+import {input} from "./input";
+import chalk from "chalk";
 
 async function search_anime(search: string){
     let filter = "*<ahref=\"/category/*\"title=\"*\">"
@@ -19,6 +21,11 @@ async function search_anime(search: string){
 
 
     return lines
+}
+
+async function search(){
+    console.log(chalk.magenta("Search..."))
+    let selection = input()
 }
 
 export {search_anime}

@@ -29,14 +29,14 @@ function get_cache(location:string, anime_id:string){
 }
 
 function search_cache(location:string, anime_id:string){
-    //try{
+    try{
         if (check_cache(location, anime_id)){
             return get_cache(location, anime_id)
         }
-        return 0
-    // }catch{
-    //     return 0
-    // }
+        return false
+    }catch{
+        return false
+    }
 }
 
 function check_cache(location:string, anime_id:string){

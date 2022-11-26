@@ -1,3 +1,4 @@
 # Project exclude paths
 /node_modules/
 /bin/
+/bin/index.js
