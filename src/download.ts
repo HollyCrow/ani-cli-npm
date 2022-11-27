@@ -14,11 +14,10 @@ async function download(cache_folder:string, config:config_interface){
         console.log(`Select start episode [1-${download.episode_list.length}]`)
         let start_ep_number: number = await number_input(download.episode_list.length)
         console.log(`Select end episode [${start_ep_number}-${download.episode_list.length}]`)
-        let end_ep_number: number = await number_input(download.episode_list.length, start_ep_number)
+        let end_ep_number: number = await number_input(download.episode_list.length, start_ep_number)-1
         let to_do: number[] = range(start_ep_number, end_ep_number + 1)
         do {
             for (let x in to_do) {
-                console.log(to_do[x])
                 try {
                     await download.download(to_do[x] - 1, config.download_folder)
                     to_do.splice(Number(x), 1)

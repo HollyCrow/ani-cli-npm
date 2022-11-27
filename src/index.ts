@@ -37,7 +37,7 @@ async function main(){
     )
 
     switch(choice){
-        case 0:
+        case 0: // Search
             let anime_id:string = await search()
 
             let anime:Anime = new Anime();
@@ -49,7 +49,7 @@ async function main(){
             await anime.player.quit()
             await main()
             break
-        case 1:
+        case 1: // Continue
             if (config.most_recent.anime_id == ""){
                 console.clear()
                 console.log(chalk.red("No episode played recently"))
@@ -62,14 +62,14 @@ async function main(){
             await continue_anime.player.quit()
             await main()
             break
-        case 2:
+        case 2: // Download
             let code:number = await download(cache_folder, config)
             if (code == 1){
                 console.log(chalk.red("Error downloading episodes"))
             }
             await main()
             break
-        case 3:
+        case 3: // Options
             let temp = structuredClone(config);
             let exit_code;
             while (true) {
@@ -95,7 +95,7 @@ async function main(){
             }
             await main()
             break
-        case 4:
+        case 4: // Quit
             console.log("Exit")
     }
 

@@ -218,7 +218,7 @@ class Anime{
         // @ts-ignore
         let ep_link:string = await this.get_episode_link(episode)
         let file_name = `${this.id}-${episode+1}.mp4`
-        if (ep_link.includes(".m3u8")) console.log(("Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link."));
+        if (ep_link.includes(".m3u8")) console.log(chalk.red("Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link."));
         // @ts-ignore
         let option = {
             filename: ep_link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name,
