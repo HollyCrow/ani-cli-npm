@@ -42,32 +42,31 @@ npm run start
 
 
 ## Usage:
-![image](https://user-images.githubusercontent.com/74017165/204142157-517e9c9c-ddc6-4eea-8e30-b2226f424402.png)
+![image](https://user-images.githubusercontent.com/74017165/204142452-485e31b5-68dc-4eea-9924-bfb040429b02.png)
+
 
 
 #### Input the page you wish to got to then press the enter key to select
 
-### Search:
+### Search: Input the name of the anime you want to watch, the select an anime from the search results. Then select the episode you wish to watch (If there is only one episode, said ep will be played automaticly)
 
-#### Input the name of the anime you want to watch, the select an anime from the search results. Then select the episode you wish to watch (If there is only one episode, said ep will be played automaticly)
-
-#### Play      - Plays the episode you have chosen in the player you have selected in config (VLC by default)
-
-#### Download  - Will download the episode. (This requires you to have chosed a download directory in config). 
+### Download  - Download either a single episode, or a range of episodes from an anime of your choice. Download folder can be changed in options.
 
 ##### The download feature is not currently implemented, if you wish to download, open in browser and download there.
 
 #### Show Link - Will display the link to the video file. This can be opened in a video player or browser.
 
-### Config:
+### Options:
 
 #### For configuring several of options about how the program works.
 
-#### Player     - Change which player is used to open the anime (default mpv).
+#### Player           - Change which player is used to open the anime (default browser).
 
-#### Proxy      - Proxy used for searching. This is not currently implemented and will not work.
+#### Proxy            - Proxy used for searching. This is not currently implemented and will not work.
 
-#### User agent - The user agent used to make requests to websites.
+#### User agent       - The user agent used to make requests to websites.
+
+#### Download folder  - The folder in which to download episodes.
 
 
 ## Happy watching :)
