@@ -107,40 +107,31 @@ class Anime{
         if (episode <= 0){
             switch(await selection([
                 "Next",
-                "Download",
                 "Quit"
-            ], ["n", "d", "q"])){
+            ], ["n", "q"])){
                 case 0:
                     await this.play(episode+1, config, config_dir)
                     break
                 case 1:
-                    console.log("Download") //TODO download
-                    break
-                case 2:
                     break
             }
         }else if(episode >= this.episode_list.length-1){
             switch(await selection([
                 "Previous",
-                "Download",
                 "Quit"
-            ], ["p", "d", "q"])){
+            ], ["p", "q"])){
                 case 0:
                     await this.play(episode-1, config, config_dir)
                     break
                 case 1:
-                    console.log("Download") //TODO download
-                    break
-                case 2:
                     break
             }
         }else{
             switch(await selection([
                 "Next",
                 "Previous",
-                "Download",
                 "Quit"
-            ], ["n", "p", "d", "q"])){
+            ], ["n", "p", "q"])){
                 case 0:
                     await this.play(episode+1, config, config_dir)
                     break
@@ -148,9 +139,6 @@ class Anime{
                     await this.play(episode-1, config, config_dir)
                     break
                 case 2:
-                    console.log("Download") //TODO download
-                    break
-                case 3:
                     break
             }
         }
@@ -175,40 +163,31 @@ class Anime{
         if (episode <= 0){
             switch(await selection([
                 "Next",
-                "Download",
                 "Quit"
-            ], ["n", "d", "q"])){
+            ], ["n", "q"])){
                 case 0:
                     await this.play(episode+1, config, config_dir)
                     break
                 case 1:
-                    console.log("Download") //TODO download
-                    break
-                case 2:
                     break
             }
         }else if(episode >= this.episode_list.length-1){
             switch(await selection([
                 "Previous",
-                "Download",
                 "Quit"
-            ], ["p", "d", "q"])){
+            ], ["p", "q"])){
                 case 0:
                     await this.play(episode-1, config, config_dir)
                     break
                 case 1:
-                    console.log("Download") //TODO download
-                    break
-                case 2:
                     break
             }
         }else{
             switch(await selection([
                 "Next",
                 "Previous",
-                "Download",
                 "Quit"
-            ], ["n", "p", "d", "q"])){
+            ], ["n", "p", "q"])){
                 case 0:
                     await this.play(episode+1, config, config_dir)
                     break
@@ -216,9 +195,6 @@ class Anime{
                     await this.play(episode-1, config, config_dir)
                     break
                 case 2:
-                    console.log("Download") //TODO download
-                    break
-                case 3:
                     break
             }
         }
