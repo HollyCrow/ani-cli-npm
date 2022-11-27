@@ -36,12 +36,15 @@ class Anime{
         let episode_dpage = this.episode_list[episode]
         let id = episode_dpage.replace("//gogohd.net/streaming.php?id=","")
         id = id.slice(0, id.indexOf("="))
-        let link = await generate_link(1,id, player)
+        let link:string = await generate_link(1,id, player)
         if (!link){
             link = await generate_link(2,id, player)
         }
         if (!link){
             console.log(chalk.red("Failed to generate links"))
+        }
+        if (player == "VLC" && link.includes("m3u8")){
+            console.log(chalk.red("Warning; VLC is not compatible with m3u8 playlist files without custom plugins."))
         }
         return link
     }
@@ -152,8 +155,19 @@ class Anime{
             await open(await this.get_episode_link(episode, "BROWSER"))
         }else if(this.player == 1){
             console.log(await this.get_episode_link(episode))
-        } else{
+        } else if (this.player.opts.app == "mpv"){
             await this.player.load(await this.get_episode_link(episode))
+        }else{
+            this.player.quit()
+            this.player = await new PlayerController({
+                app: 'vlc',
+                args: ['--fullscreen'],
+                media: await this.get_episode_link(episode, config.player)
+            });
+            // @ts-ignore
+            await this.player.launch(err => {
+                if (err) return console.error(err.message);
+            });
         }
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
