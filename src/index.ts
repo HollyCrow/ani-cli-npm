@@ -42,9 +42,13 @@ async function main(){
 
             let anime:Anime = new Anime();
             await anime.init(anime_id, cache_folder)
-            console.log(`Select episode [1-${anime.episode_list.length}]`)
-            let episode_number:number = await number_input(anime.episode_list.length)-1
-
+            let episode_number:number
+            if (anime.episode_list.length == 1){
+                episode_number = 0;
+            }else{
+                console.log(`Select episode [1-${anime.episode_list.length}]`)
+                episode_number = await number_input(anime.episode_list.length)-1
+            }
             await anime.play_head(episode_number, config, cache_folder)
             await anime.player.quit()
             await main()

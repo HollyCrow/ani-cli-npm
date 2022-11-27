@@ -41,9 +41,14 @@ async function input(){
 }
 
 async function number_input(max:number, min:number=1){
+    let selector:string;
     let selection:number;
     do{
-        selection = parseInt(await _prompt(">"))
+        selector = await _prompt(">")
+        selection = parseInt(selector)
+        if (selector == ""){
+            selection = min
+        }
         if (!(min <= selection && selection <= max)){
             console.log(chalk.red("Invalid choice."))
         }

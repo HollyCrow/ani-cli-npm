@@ -11,10 +11,17 @@ async function download(cache_folder:string, config:config_interface){
         let download_id: string = await search()
         let download: Anime = new Anime();
         await download.init(download_id, cache_folder)
-        console.log(`Select start episode [1-${download.episode_list.length}]`)
-        let start_ep_number: number = await number_input(download.episode_list.length)
-        console.log(`Select end episode [${start_ep_number}-${download.episode_list.length}]`)
-        let end_ep_number: number = await number_input(download.episode_list.length, start_ep_number)-1
+        let start_ep_number:number;
+        let end_ep_number:number;
+        if (download.episode_list.length <= 1){
+            start_ep_number = 1
+            end_ep_number = 0
+        }else{
+            console.log(`Select start episode [1-${download.episode_list.length}]`)
+            start_ep_number = await number_input(download.episode_list.length)
+            console.log(`Select end episode [${start_ep_number}-${download.episode_list.length}]`)
+            end_ep_number = await number_input(download.episode_list.length, start_ep_number)-1
+        }
         let to_do: number[] = range(start_ep_number, end_ep_number + 1)
         do {
             for (let x in to_do) {
