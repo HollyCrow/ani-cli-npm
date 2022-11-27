@@ -1,3 +1,4 @@
+const fetch = require("node-fetch")
 async function curl(url: string, method="GET", redirect = false){
     //try{
     let response = await fetch(url, {

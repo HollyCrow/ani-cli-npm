@@ -1,5 +1,3 @@
-import {inspect} from "util";
-
 const chalk = require("chalk")
 import {selection, input} from "./input";
 import {config_interface} from "./interfaces";

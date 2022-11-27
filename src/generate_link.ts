@@ -3,7 +3,6 @@ const base_url="https://animixplay.to"
 
 import {curl} from "./curl";
 import {RegexParse} from "./regex";
-import {config_interface} from "./interfaces";
 
 
 async function generate_link(provider: number, id: string, player:string){
@@ -46,12 +45,5 @@ async function generate_link(provider: number, id: string, player:string){
     }
 }
 
-async function get_links(id:string, player:string){
-    let link = await generate_link(1,id, player)
-    if (!link){
-        link = await generate_link(2,id, player)
-    }
-    return link
-}
 
 export { generate_link }

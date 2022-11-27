@@ -1,29 +1,21 @@
 // process.removeAllListeners() // Ignore warning
 
 // External
-import * as fetch from "node-fetch"
-import * as open from "open"
+
 import _appDataFolder from "appdata-path";
-import * as downloadsFolder from "node-fetch"
 const chalk = require("chalk")
-// const downloadsFolder = require('downloads-folder');
-const dl = require("download-file-with-progressbar");
-const prompt = require("simple-input");
-const PlayerController = require("media-player-controller")
 
 // Internal
 import {Anime} from "./Anime";
 import {search} from "./search_anime";
 import {load_config} from "./load_config";
-import {selection, input, number_input} from "./input";
+import {selection, number_input} from "./input";
 import {config_} from "./change_config";
 import {download} from "./download";
-import {range} from "./libs";
 import fs from "fs";
 
 const app_data_folder:string = _appDataFolder()
 const cache_folder:string = app_data_folder+"/ani-cli-npm"
-//let config = load_config(app_data_folder)
 
 
 console.clear()

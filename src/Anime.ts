@@ -2,8 +2,8 @@ import {curl} from "./curl";
 import {RegexParse} from "./regex";
 import {generate_link} from "./generate_link";
 import {config_interface} from "./interfaces";
-import {search_cache, new_cache} from "./cache";
-import {number_input, selection} from "./input";
+import {search_cache} from "./cache";
+import {selection} from "./input";
 import {write_config} from "./load_config";
 const open = require("open")
 const PlayerController = require("media-player-controller")
@@ -47,7 +47,6 @@ class Anime{
     }
 
     async get_ap_bases(anime_id:string){
-        let list = []
         let html = (await(curl(base_url+"/v1/"+anime_id))).split("\n")
         let lines = ""
         for (let x in html){
