@@ -16,6 +16,8 @@ import {Anime} from "./Anime";
 import {search} from "./search_anime";
 import {load_config} from "./load_config";
 import {selection, input, number_input} from "./input";
+import {config_} from "./change_config";
+import fs from "fs";
 
 const app_data_folder:string = _appDataFolder()
 const cache_folder:string = app_data_folder+"/ani-cli-npm"
@@ -91,7 +93,29 @@ async function main(){
             await main()
             break
         case 3:
-            console.log("Options") //TODO Options
+            let temp = structuredClone(config);
+            let exit_code;
+            while (true) {
+                // @ts-ignore
+                temp, exit_code = await config_(temp)
+                if (exit_code === 1) {
+                    config = temp
+                    //proxyAgent = new HttpsProxyAgent(config.proxy);
+                    console.clear()
+                    console.log(chalk.yellow("Config changed."))
+                    break
+                } else if (exit_code === 2) {
+                    temp = config
+                    console.clear()
+                    console.log(chalk.yellow("Config changes disregarded."))
+                    break
+                }
+            }
+            try{
+                fs.writeFileSync(cache_folder+"/config.conf", JSON.stringify(config))
+            }catch{
+                console.log(chalk.red("Error writing to .conf file."))
+            }
             await main()
             break
         case 4:

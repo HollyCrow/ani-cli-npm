@@ -53,9 +53,6 @@ function load_config(cache_dir: string){
         }
         // @ts-ignore
         if (tmp.download_folder !== undefined) config.download_folder = tmp.download_folder;
-        // @ts-ignore
-        if (tmp.debug_mode !== undefined) config.debug_mode = tmp.debug_mode;
-
     }
 
     write_config(cache_dir, config)
