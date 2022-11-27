@@ -22,6 +22,9 @@ console.clear()
 async function main(){
     let config = load_config(app_data_folder)
     console.log(chalk.magenta("Ani-cli-npm!\n"))
+    if (config.most_recent.anime_id !== ""){
+        console.log(chalk.grey(`Most recently played: ${config.most_recent.anime_id} episode ${config.most_recent.episode_number+1}\n`))
+    }
     let choice:number = await selection([
         "Search",
         "Continue",
