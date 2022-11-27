@@ -1,4 +1,5 @@
-// process.removeAllListeners() // Ignore warning
+#!/usr/bin/env node
+process.removeAllListeners() // Ignore warning
 
 // External
 

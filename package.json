@@ -1,11 +1,11 @@
 {
   "name": "ani-cli-npm",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "ani-cli tool rewritten as npm package",
   "main": "bin/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node --no-warnings bin/index.js"
+    "start": "node bin/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   "author": "bumpkin-pi",
   "license": "ISC",
   "bin": {
-    "multiply": "bin/index.js"
+    "ani-cli-npm": "/bin/index.js"
   },
   "dependencies": {
     "@types/node-fetch": "^2.6.2",
