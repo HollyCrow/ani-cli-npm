@@ -47,6 +47,7 @@ async function main(){
             let episode_number:number = await number_input(anime.episode_list.length)-1
 
             await anime.play_head(episode_number, config, cache_folder)
+            await anime.player.quit()
             await main()
             break
         case 1:
@@ -59,6 +60,7 @@ async function main(){
             let continue_anime:Anime = new Anime()
             await continue_anime.init(config.most_recent.anime_id, cache_folder)
             await continue_anime.play_head(config.most_recent.episode_number, config, cache_folder)
+            await continue_anime.player.quit()
             await main()
             break
         case 2:

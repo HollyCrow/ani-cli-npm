@@ -64,6 +64,8 @@ class Anime{
     }
 
     async play_head(episode:number, config:config_interface, config_dir:string){
+        console.clear()
+        console.log(`Playing ${this.id} episode ${episode+1}`)
         switch (config.player){
             case "MPV":
                 console.log(("Opening MPV.."))
@@ -102,34 +104,63 @@ class Anime{
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
         write_config(config_dir, config)
-        switch(await selection([
-            "Next",
-            "Previous",
-            "Download",
-            "Quit"
-        ], ["n", "p", "d", "q"])){
-            case 0:
-                if (episode == this.episode_list.length){
-                    console.log(chalk.red("Aww, all out of episodes?"))
+
+        if (episode <= 0){
+            switch(await selection([
+                "Next",
+                "Download",
+                "Quit"
+            ], ["n", "d", "q"])){
+                case 0:
+                    await this.play(episode+1, config, config_dir)
                     break
-                }
-                await this.play(episode+1, config, config_dir)
-                break
-            case 1:
-                if (episode == 0){
-                    console.log(chalk.red("Sorry, episode 0 is only available for premium members."))
-                }
-                await this.play(episode-1, config, config_dir)
-                break
-            case 2:
-                console.log("Download") //TODO download
-                break
-            case 3:
-                break
+                case 1:
+                    console.log("Download") //TODO download
+                    break
+                case 2:
+                    break
+            }
+        }else if(episode >= this.episode_list.length-1){
+            switch(await selection([
+                "Previous",
+                "Download",
+                "Quit"
+            ], ["p", "d", "q"])){
+                case 0:
+                    await this.play(episode-1, config, config_dir)
+                    break
+                case 1:
+                    console.log("Download") //TODO download
+                    break
+                case 2:
+                    break
+            }
+        }else{
+            switch(await selection([
+                "Next",
+                "Previous",
+                "Download",
+                "Quit"
+            ], ["n", "p", "d", "q"])){
+                case 0:
+                    await this.play(episode+1, config, config_dir)
+                    break
+                case 1:
+                    await this.play(episode-1, config, config_dir)
+                    break
+                case 2:
+                    console.log("Download") //TODO download
+                    break
+                case 3:
+                    break
+            }
         }
+
     }
 
     async play(episode:number, config:config_interface, config_dir:string){
+        console.clear()
+        console.log(`Playing ${this.id} episode ${episode+1}`)
         if (this.player == 0){
             await open(await this.get_episode_link(episode, "BROWSER"))
         }else if(this.player == 1){
@@ -140,23 +171,57 @@ class Anime{
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
         write_config(config_dir, config)
-        switch(await selection([
-            "Next",
-            "Previous",
-            "Download",
-            "Quit"
-        ], ["n", "p", "d", "q"])){
-            case 1:
-                await this.play(episode+1, config, config_dir)
-                break
-            case 2:
-                await this.play(episode-1, config, config_dir)
-                break
-            case 3:
-                console.log("Download") //TODO download
-                break
-            case 4:
-                break
+
+
+        if (episode <= 0){
+            switch(await selection([
+                "Next",
+                "Download",
+                "Quit"
+            ], ["n", "d", "q"])){
+                case 0:
+                    await this.play(episode+1, config, config_dir)
+                    break
+                case 1:
+                    console.log("Download") //TODO download
+                    break
+                case 2:
+                    break
+            }
+        }else if(episode >= this.episode_list.length-1){
+            switch(await selection([
+                "Previous",
+                "Download",
+                "Quit"
+            ], ["p", "d", "q"])){
+                case 0:
+                    await this.play(episode-1, config, config_dir)
+                    break
+                case 1:
+                    console.log("Download") //TODO download
+                    break
+                case 2:
+                    break
+            }
+        }else{
+            switch(await selection([
+                "Next",
+                "Previous",
+                "Download",
+                "Quit"
+            ], ["n", "p", "d", "q"])){
+                case 0:
+                    await this.play(episode+1, config, config_dir)
+                    break
+                case 1:
+                    await this.play(episode-1, config, config_dir)
+                    break
+                case 2:
+                    console.log("Download") //TODO download
+                    break
+                case 3:
+                    break
+            }
         }
     }
 
