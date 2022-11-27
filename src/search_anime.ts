@@ -28,6 +28,10 @@ async function search(){
     console.log(chalk.magenta("Search..."))
     let _selection = await input()
     let results:string[] = await search_anime(_selection)
+    if (results[0] === undefined){
+        console.log(chalk.red("No results found."))
+        return 1;
+    }
     return results[await selection(results)]
 }
 

@@ -8,7 +8,11 @@ import {config_interface} from "./interfaces";
 async function download(cache_folder:string, config:config_interface){
     try{
         console.clear()
-        let download_id: string = await search()
+        let temp_:any = await search()
+        if (temp_ == 1){
+            return 2;
+        }
+        let download_id:string = temp_
         let download: Anime = new Anime();
         await download.init(download_id, cache_folder)
         let start_ep_number:number;

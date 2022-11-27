@@ -39,7 +39,12 @@ async function main(){
 
     switch(choice){
         case 0: // Search
-            let anime_id:string = await search()
+            let temp_:any = await search()
+            if (temp_ == 1){
+                await main()
+                process.exit()
+            }
+            let anime_id:string = temp_
 
             let anime:Anime = new Anime();
             await anime.init(anime_id, cache_folder)
