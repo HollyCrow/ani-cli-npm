@@ -1,7 +1,7 @@
 # ANI-CLI-NPM
 
 ### An Anime client, writen in nodeJS, to access any* anime without the need for ad filled websites! Just install, search for the anime of your choice, and watch in the video player of your choice.
-### NodeJS rewrite of the [ani-cli](https://github.com/pystardust/ani-cli) package for linux.
+### Typescript rewrite of the [ani-cli](https://github.com/pystardust/ani-cli) package for linux.
 
 
 ## Instalation:
@@ -31,11 +31,19 @@ npx ani-cli-npm@latest
 ```
 npx ani-cli-npm@latest
 ```
-##### Note: If you are using linux, I would advise just using the origonal [ani-cli](https://github.com/pystardust/ani-cli), the main perpous of this package is to allow easier use on windows and android.
+
+### Build from git:
+```
+git clone https://github.com/Bumpkin-Pi/ani-cli-npm.git
+cd ani-cli-npm
+npm run build
+npm run start
+```
 
 
 ## Usage:
-<img width="147" alt="image" src="https://user-images.githubusercontent.com/74017165/195988816-5088cbff-348e-4852-a1a0-ef343785d488.png">
+![image](https://user-images.githubusercontent.com/74017165/204142157-517e9c9c-ddc6-4eea-8e30-b2226f424402.png)
+
 
 #### Input the page you wish to got to then press the enter key to select
 
@@ -61,10 +69,5 @@ npx ani-cli-npm@latest
 
 #### User agent - The user agent used to make requests to websites.
 
-
-## Current limitations:
-
-
-### This project is still somewhat under development, as such, there are a few bugs you may run into. Feel free to open an issue on github, though there is a solid chance I am aware of it and just havn't gotten round to fixing it yet.
 
 ## Happy watching :)
