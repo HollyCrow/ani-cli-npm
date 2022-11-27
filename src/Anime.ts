@@ -35,6 +35,7 @@ class Anime{
         anime_id:
          */
         let cache_object = search_cache(cache_folder, anime_id)
+        console.log(cache_object)
         this.id = anime_id
         if (cache_object == 0){
             await this.get_ep_bases(this.id)
