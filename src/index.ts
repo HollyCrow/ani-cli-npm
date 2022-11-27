@@ -17,6 +17,8 @@ import {search} from "./search_anime";
 import {load_config} from "./load_config";
 import {selection, input, number_input} from "./input";
 import {config_} from "./change_config";
+import {download} from "./download";
+import {range} from "./libs";
 import fs from "fs";
 
 const app_data_folder:string = _appDataFolder()
@@ -66,29 +68,9 @@ async function main(){
             await main()
             break
         case 2:
-            console.clear()
-            let download_id:string = await search()
-            let download:Anime = new Anime();
-            await download.init(download_id, cache_folder)
-            console.log(`Select start episode [1-${download.episode_list.length}]`)
-            let start_ep_number:number = await number_input(download.episode_list.length)
-            console.log(`Select end episode [${start_ep_number}-${download.episode_list.length}]`)
-            let end_ep_number:number = await number_input(download.episode_list.length, start_ep_number)
-            let fails:number[] = []
-            for (let episode:number = start_ep_number-1; episode <= end_ep_number; episode++){
-                try{
-                    (await download.download(episode, config.download_folder))
-                }catch{
-                    try{
-                        (await download.download(episode, config.download_folder))
-                    }catch{
-                        console.log(chalk.red("Failed to download episode "+episode))
-                        fails.push(episode)
-                    }
-                }
-            }
-            if (fails[0] !== undefined){ //TODO fix buggy downloads
-                console.log(chalk.red("Failed to download episodes: "+fails))
+            let code:number = await download(cache_folder, config)
+            if (code == 1){
+                console.log(chalk.red("Error downloading episodes"))
             }
             await main()
             break

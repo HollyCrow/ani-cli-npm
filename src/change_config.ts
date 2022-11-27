@@ -20,9 +20,10 @@ async function config_(temp:config_interface){
     switch (choice){
         case 0:
             let player = await selection([
-                "VLC",
-                "Browser",
-                "MPV"
+                "VLC      - VLC media player",
+                "Browser  - Play in default browser",
+                "MPV      - MPV media player",
+                "Link     - Simply display the link in console"
             ], [], ((item) => {return chalk.cyan(item)}), ((item) => {return chalk.cyan(item)}))
             switch (player){
                 case 0:
@@ -33,6 +34,9 @@ async function config_(temp:config_interface){
                     break
                 case 2:
                     temp.player = "MPV"
+                    break
+                case 3:
+                    temp.player = "LINK"
                     break
             }
             // @ts-ignore

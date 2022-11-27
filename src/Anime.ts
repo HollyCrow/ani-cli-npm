@@ -237,7 +237,7 @@ class Anime{
             // @ts-ignore
             onDone: (info)=>{
                 // @ts-ignore
-                console.log(chalk.green(`\n -- Download finished -- \nLocation: ${info.path}. Size: ${Math.round(info.size/100000)*10} Bytes`));
+                console.log(chalk.green(`\n -- Download finished -- \nLocation: ${info.path}. Size: ${Math.round(info.size/100000)*10} Bytes\n`)+">");
                 return 0;
             },
             // @ts-ignore
