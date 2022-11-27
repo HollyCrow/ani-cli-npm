@@ -64,8 +64,9 @@ async function main(){
             let continue_anime:Anime = new Anime()
             await continue_anime.init(config.most_recent.anime_id, cache_folder)
             await continue_anime.play_head(config.most_recent.episode_number, config, cache_folder)
-            await continue_anime.player.quit()
-            await main()
+            if (continue_anime.player != 0 && continue_anime.player != 1){
+                await continue_anime.player.quit()
+            }await main()
             break
         case 2: // Download
             let code:number = await download(cache_folder, config)
