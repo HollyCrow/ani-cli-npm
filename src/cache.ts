@@ -14,24 +14,33 @@ function clear_cache(location:string, show:boolean){
     }
 }
 
-function new_cache(location:string, anime:Anime, show:boolean){
+function new_cache(location:string, anime:Anime){
+    /*
+    Creates cache of Anime object, in cache file.
+     */
     try{
         fs.writeFileSync(location+"/"+anime.id+".cache", JSON.stringify(anime))
     }catch{
-        if (show){
-            console.log("Failed to write to cache")
-        }
+        console.log("Failed to write to cache")
     }
 }
 
 function get_cache(location:string, anime_id:string){
+    /*
+    ## Get cache by anime_id. Does not check if the cache exists.
+     */
     return JSON.parse(fs.readFileSync(location+"/"+anime_id+".cache").toString())
 }
 
-function search_cache(location:string, anime_id:string){
+function search_cache(cache_folder:string, anime_id:string){
+    /*
+    ## Searches cache folder for cache file with name of anime_id, at the location of cache_folder
+
+    ### returns boolean for weather it is found.
+     */
     try{
-        if (check_cache(location, anime_id)){
-            return get_cache(location, anime_id)
+        if (check_cache(cache_folder, anime_id)){
+            return get_cache(cache_folder, anime_id)
         }
         return false
     }catch{

@@ -35,7 +35,6 @@
     "media-player-controller": "^1.5.3",
     "node-fetch": "^2.6.6",
     "open": "^8.4.0",
-    "persistent-cache": "^0.1.0",
     "simple-input": "^1.0.1",
     "typescript": "^4.9.3"
   },

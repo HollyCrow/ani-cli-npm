@@ -4,6 +4,9 @@ import {config_interface} from "./interfaces";
 
 
 async function config_(temp:config_interface){
+    /*
+    ## Lets user change a single attribute of config. Returns new config object, and an exit code
+     */
     console.clear()
     console.log(chalk.blue("ANI-CLI-NPM \n"))
     console.log(chalk.yellow("Config:\n"))

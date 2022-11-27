@@ -2,31 +2,48 @@ import {curl} from "./curl";
 import {RegexParse} from "./regex";
 import {generate_link} from "./generate_link";
 import {config_interface} from "./interfaces";
-import {search_cache} from "./cache";
+import {search_cache, new_cache} from "./cache";
 import {selection} from "./input";
 import {write_config} from "./load_config";
 const open = require("open")
 const PlayerController = require("media-player-controller")
 const dl = require("download-file-with-progressbar");
 const chalk = require("chalk")
-// const gogohd_url="https://gogohd.net/"
-const base_url="https://animixplay.to"
 
 class Anime{
+    /*
+    Class for handling a show/film
+
+    Stores anime dpage links assigned with anime_id.
+
+    Initialised with Anime.init()
+
+     */
+
     id: string = ""
     episode_list: string[] = []
     player:any = 0;
 
     async init(anime_id: string, cache_folder:string){ // init mate
+        /*
+        Initiate Anime object
+
+        Will first search cache folder for cache file (this will contain id and dpage links)
+
+        If no cache is found, it will use get_ep_bases(anime_id) to get links. (Webscrapes from animixplay.to), then creates cache
+
+        anime_id:
+         */
         let cache_object = search_cache(cache_folder, anime_id)
         this.id = anime_id
         if (cache_object == 0){
-            await this.get_ap_bases(anime_id)
+            await this.get_ep_bases(this.id)
+            new_cache(cache_folder,this)
         }else{
             try{
                 this.episode_list = cache_object.episode_list
             }catch{
-                await this.get_ap_bases(anime_id)
+                await this.get_ep_bases(this.id)
             }
         }
         return 0;
@@ -49,8 +66,12 @@ class Anime{
         return link
     }
 
-    async get_ap_bases(anime_id:string){
-        let html = (await(curl(base_url+"/v1/"+anime_id))).split("\n")
+    async get_ep_bases(anime_id:string){
+        /*
+        Scrapes animixplay.to for dpage links.
+        returns array with all dpage links
+         */
+        let html = (await(curl("https://animixplay.to/v1/"+anime_id))).split("\n") //POTENTIAL BREAK POINT. animixplay.to may change domain address
         let lines = ""
         for (let x in html){
             if(RegexParse(html[x], "*<div id=\"epslistplace\"*")){
@@ -66,6 +87,20 @@ class Anime{
     }
 
     async play_head(episode:number, config:config_interface, config_dir:string){
+        /*
+        # Starts play cascade.
+
+        ## Takes in:
+        ### Episode number, counding from 0
+        ### Config object
+        ### Config save directory
+
+         - If config.player is set to MPV or VLC, it will use the media-player-controller package.
+
+         - If set to Browser, it will use the "open" packer.
+
+         - If set to Link, it will simply print the media stream link to console, primarily for debuting peruses.
+         */
         console.clear()
         console.log(`Playing ${this.id} episode ${episode+1}`)
         switch (config.player){
@@ -149,6 +184,10 @@ class Anime{
     }
 
     async play(episode:number, config:config_interface, config_dir:string){
+        /*
+        # Continues play cascade
+        ## Continues on from play_head()
+         */
         console.clear()
         console.log(`Playing ${this.id} episode ${episode+1}`)
         if (this.player == 0){
@@ -214,7 +253,10 @@ class Anime{
         }
     }
 
-    async download(episode:number, download_folder:string){
+    async download(episode:number, download_folder:string){ //TODO fix last progress bar appearing after selection.
+        /*
+        ## Downloads an episode (counting from 0) to download_folder, with progress bar.
+         */
         // @ts-ignore
         let ep_link:string = await this.get_episode_link(episode)
         let file_name = `${this.id}-${episode+1}.mp4`
@@ -242,14 +284,6 @@ class Anime{
         //console.log((`${option.dir}/${option.filename}`))
 
         return await dl(ep_link, option);
-    }
-
-    async bulk_download(start_episode:number, end_episode:number, download_folder:string){
-        let downloaders = []
-        for (let episode:number = start_episode; episode <= end_episode; episode++){
-            downloaders.push(await this.download(episode, download_folder))
-        }
-        return await Promise.all(downloaders)
     }
 
 }
