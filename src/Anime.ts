@@ -82,7 +82,7 @@ class Anime{
                 console.log(("Opening VLC.."))
 
                 this.player = await new PlayerController({
-                    app: 'mpv',
+                    app: 'vlc',
                     args: ['--fullscreen'],
                     media: await this.get_episode_link(episode, config.player)
                 });
