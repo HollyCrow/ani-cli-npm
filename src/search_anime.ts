@@ -1,6 +1,6 @@
 import {RegexParse} from "./regex";
 import {curl} from "./curl";
-import {input} from "./input";
+import {input, selection} from "./input";
 import chalk from "chalk";
 
 async function search_anime(search: string){
@@ -24,8 +24,13 @@ async function search_anime(search: string){
 }
 
 async function search(){
+    console.clear()
     console.log(chalk.magenta("Search..."))
-    let selection = input()
+    let _selection = await input()
+    let results:string[] = await search_anime(_selection)
+    return results[await selection(results)]
 }
 
-export {search_anime}
+
+
+export {search}

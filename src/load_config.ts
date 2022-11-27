@@ -5,7 +5,7 @@ import {config_interface} from "./interfaces";
 
 function make_config_dir(cache_dir:string, debug:boolean){
     try{
-        if (!fs.existsSync(cache_dir+"/ani-cli-npm/")) fs.mkdirSync(cache_dir+"/ani-cli-npm");
+        if (!fs.existsSync(cache_dir+"/")) fs.mkdirSync(cache_dir+"/");
     }catch{
         if (debug){
             console.log("Failed to make cache dir")
@@ -16,7 +16,7 @@ function make_config_dir(cache_dir:string, debug:boolean){
 function write_config(cache_dir:string, config:config_interface){
     try{
         make_config_dir(cache_dir, config.debug_mode)
-        fs.writeFileSync(cache_dir+"/ani-cli-npm/config.conf", JSON.stringify(config))
+        fs.writeFileSync(cache_dir+"/config.conf", JSON.stringify(config))
     }catch{
         console.log(("Failed to write to config file."))
     }
@@ -63,4 +63,4 @@ function load_config(cache_dir: string){
     return config
 }
 
-export {load_config}
+export {load_config, write_config}

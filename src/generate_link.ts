@@ -6,7 +6,7 @@ import {RegexParse} from "./regex";
 import {config_interface} from "./interfaces";
 
 
-async function generate_link(provider: number, id: string, config: config_interface){
+async function generate_link(provider: number, id: string, player:string){
     let html_:string = ""
     let provider_name = ""
     switch (provider) {
@@ -39,11 +39,19 @@ async function generate_link(provider: number, id: string, config: config_interf
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
             let ani_id = buffer.toString("base64")
             buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
-            if (config.player === "BROWSER"){
+            if (player === "BROWSER"){
                 return `${base_url}/api/live${ani_id}`
             }
             return buffer.toString("utf-8")
     }
+}
+
+async function get_links(id:string, player:string){
+    let link = await generate_link(1,id, player)
+    if (!link){
+        link = await generate_link(2,id, player)
+    }
+    return link
 }
 
 export { generate_link }
