@@ -36,6 +36,7 @@ npx ani-cli-npm@latest
 ```
 git clone https://github.com/Bumpkin-Pi/ani-cli-npm.git
 cd ani-cli-npm
+npm i
 npm run build
 npm run start
 ```
