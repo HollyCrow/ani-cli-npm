@@ -9,7 +9,7 @@ const chalk = require("chalk")
 // Internal
 import {Anime} from "./Anime";
 import {search} from "./search_anime";
-import {load_config} from "./load_config";
+import {load_config, make_config_dir} from "./load_config";
 import {selection, number_input} from "./input";
 import {config_} from "./change_config";
 import {download} from "./download";
@@ -17,11 +17,11 @@ import fs from "fs";
 
 const app_data_folder:string = _appDataFolder()
 const cache_folder:string = app_data_folder+"/ani-cli-npm"
-
+make_config_dir(cache_folder, true)
 
 console.clear()
 async function main(){
-    let config = load_config(app_data_folder)
+    let config = load_config(cache_folder)
     console.log(chalk.magenta("Ani-cli-npm!\n"))
     if (config.most_recent.anime_id !== ""){
         console.log(chalk.grey(`Most recently played: ${config.most_recent.anime_id} episode ${config.most_recent.episode_number+1}\n`))
@@ -109,6 +109,7 @@ async function main(){
         case 4: // Quit
             console.log("Exit")
     }
+    return 0;
 
     // await search()
 }

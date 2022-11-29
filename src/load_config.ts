@@ -15,7 +15,7 @@ function make_config_dir(cache_dir:string, debug:boolean){
 
 function write_config(cache_dir:string, config:config_interface){
     try{
-        make_config_dir(cache_dir, config.debug_mode)
+        //make_config_dir(cache_dir, config.debug_mode)
         fs.writeFileSync(cache_dir+"/config.conf", JSON.stringify(config))
     }catch{
         console.log(("Failed to write to config file."))
@@ -60,4 +60,4 @@ function load_config(cache_dir: string){
     return config
 }
 
-export {load_config, write_config}
+export {load_config, write_config, make_config_dir}
