@@ -253,37 +253,45 @@ class Anime{
         }
     }
 
-    async download(episode:number, download_folder:string){ //TODO fix last progress bar appearing after selection.
+    async download(episode:number, download_folder:string, final_ep:number){ //TODO fix last progress bar appearing after selection.
         /*
         ## Downloads an episode (counting from 0) to download_folder, with progress bar.
          */
-        // @ts-ignore
-        let ep_link:string = await this.get_episode_link(episode)
-        let file_name = `${this.id}-${episode+1}.mp4`
-        if (ep_link.includes(".m3u8")) console.log(chalk.red("Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link."));
-        // @ts-ignore
-        let option = {
-            filename: ep_link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name,
-            dir: download_folder,
+        try {
             // @ts-ignore
-            onDone: (info)=>{
+            let ep_link: string = await this.get_episode_link(episode)
+            let file_name = `${this.id}-${episode + 1}.mp4`
+            if (ep_link.includes(".m3u8")) console.log(chalk.red("Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link."));
+            // @ts-ignore
+            let option = {
+                filename: (ep_link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name),
+                dir: download_folder,
+                onDone: (final_ep > episode) ? ((info: any) => {
+                    // @ts-ignore
+                    console.log(chalk.green(`\n -- 1Download finished -- \nLocation: ${info.path}. Size: ${Math.round(info.size / 100000) * 10} Bytes\n`));
+                    this.download(episode + 1, download_folder, final_ep)
+                }) : ((info: any) => {
+                    // @ts-ignore
+                    console.log(chalk.green(`\n -- 2Download finished -- \n${info.path}. Size: ${Math.round(info.size / 100000) * 10} Bytes\n`));
+                }),
                 // @ts-ignore
-                console.log(chalk.green(`\n -- Download finished -- \nLocation: ${info.path}. Size: ${Math.round(info.size/100000)*10} Bytes\n`)+">");
-                return 0;
-            },
-            // @ts-ignore
-            onError: (err) => {
-                console.log(chalk.red('error', err));
-            },
-            // @ts-ignore
-            onProgress: (curr, total) => {
-                process.stdout.clearLine(0);
-                process.stdout.cursorTo(0);
-                process.stdout.write("\x1b[32m -- "+(curr / total * 100).toFixed(2)+"% "+"#". repeat(Math.ceil((curr / total)*((process.stdout.columns-20)/1.5)))+"~".repeat(Math.ceil(((process.stdout.columns-20)/1.5) - (curr / total)*((process.stdout.columns-20)/1.5)))+" -- \x1b[0m")
-        }}
-        //console.log((`${option.dir}/${option.filename}`))
+                onError: (err) => {
+                    console.log(chalk.red('error', err));
+                    this.download(episode, download_folder, final_ep)
+                },
+                // @ts-ignore
+                onProgress: (curr, total) => {
+                    process.stdout.clearLine(0);
+                    process.stdout.cursorTo(0);
+                    process.stdout.write("\x1b[32m -- " + (curr / total * 100).toFixed(2) + "% " + "#".repeat(Math.ceil((curr / total) * ((process.stdout.columns - 20) / 1.5))) + "~".repeat(Math.ceil(((process.stdout.columns - 20) / 1.5) - (curr / total) * ((process.stdout.columns - 20) / 1.5))) + " -- \x1b[0m")
+                }
+            }
+            //console.log((`${option.dir}/${option.filename}`))
 
-        return await dl(ep_link, option);
+            return await dl(ep_link, option);
+        }catch{
+            this.download(episode, download_folder, final_ep)
+        }
     }
 
 }

@@ -78,7 +78,6 @@ async function main(){
             if (code == 1){
                 console.log(chalk.red("Error downloading episodes"))
             }
-            await main()
             break
         case 3: // Options
             let temp = structuredClone(config);
