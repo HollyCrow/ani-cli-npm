@@ -53,10 +53,12 @@ async function main(){
                 episode_number = 0;
             }else{
                 console.log(`Select episode [1-${anime.episode_list.length}]`)
-                episode_number = await number_input(anime.episode_list.length)-1
+                episode_number = await number_input(anime.episode_list.length)
             }
-            await anime.play_head(episode_number, config, cache_folder)
-            await anime.player.quit()
+            await anime.play_head(episode_number-1, config, cache_folder)
+            if (anime.player != 1 && anime.player != 0){
+                await anime.player.quit()
+            }
             await main()
             break
         case 1: // Continue

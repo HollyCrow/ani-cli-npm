@@ -82,7 +82,9 @@ class Anime{
         lines = "{" + lines.slice(lines.indexOf(",")+1, lines.length) + "}"
         let json = JSON.parse(lines)
         for (const value of Object.entries(json) as unknown as string[]) {
-            this.episode_list.push(value[1])
+            if (typeof value[1] == "string"){
+                this.episode_list.push(value[1])
+            }
         }
     }
 
@@ -153,7 +155,7 @@ class Anime{
                 case 1:
                     break
             }
-        }else if(episode >= this.episode_list.length-1){
+        }else if(episode >= this.episode_list.length-2){
             switch(await selection([
                 "Previous",
                 "Quit"
@@ -224,7 +226,7 @@ class Anime{
                 case 1:
                     break
             }
-        }else if(episode >= this.episode_list.length-1){
+        }else if(episode >= this.episode_list.length-2){
             switch(await selection([
                 "Previous",
                 "Quit"
