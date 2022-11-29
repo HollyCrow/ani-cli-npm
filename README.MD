@@ -36,6 +36,7 @@ npx ani-cli-npm@latest
 ```
 git clone https://github.com/Bumpkin-Pi/ani-cli-npm.git
 cd ani-cli-npm
+npm i
 npm run build
 npm run start
 ```
@@ -70,3 +71,5 @@ npm run start
 
 
 ## Happy watching :)
+
+<a href="https://www.buymeacoffee.com/bumpkinpi" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
