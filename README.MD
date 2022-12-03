@@ -3,6 +3,8 @@
 ### An Anime client, writen in nodeJS, to access any* anime without the need for ad filled websites! Just install, search for the anime of your choice, and watch in the video player of your choice.
 ### Typescript rewrite of the [ani-cli](https://github.com/pystardust/ani-cli) package for linux.
 
+![image](https://user-images.githubusercontent.com/74017165/205444723-20520eb1-55dd-4103-811b-07e2cf6c466d.png)
+
 
 ## Instalation:
 ### Windows:
@@ -68,6 +70,8 @@ npm run start
 #### User agent       - The user agent used to make requests to websites.
 
 #### Download folder  - The folder in which to download episodes.
+
+![image](https://user-images.githubusercontent.com/74017165/205444327-d67c5099-beaf-4895-9c74-c24b79a95e07.png)
 
 
 
