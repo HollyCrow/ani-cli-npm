@@ -21,7 +21,7 @@ async function selection(options:string[], extra_options:string[] = [], color1 =
 
        default: ((thing:string) => {return chalk.yellow(thing)}) and ((thing:string) => {return chalk.green(thing)})
 
-     - Overwrite: boolean. Please dont use this. I should be using it. It prints out the raw string instead of adding numbers to them to allow for bogus.
+     - Overwrite: boolean. Please dont use this. I should not be using it. It prints out the raw string instead of adding numbers to them to allow for bogus.
     */
 
 

@@ -3,7 +3,7 @@ import {RegexParse} from "./regex";
 import {generate_link} from "./generate_link";
 import {config_interface} from "./interfaces";
 import {search_cache, new_cache} from "./cache";
-import {selection} from "./input";
+import {number_input, selection} from "./input";
 import {write_config} from "./load_config";
 const open = require("open")
 const PlayerController = require("media-player-controller")
@@ -165,7 +165,7 @@ class Anime{
          */
         if (!first){
             console.clear()
-            console.log(`Playing ${this.id} episode ${episode+1}`)
+            console.log(chalk.blue(`Playing ${this.id} episode ${episode+1}`))
             if (this.player == 0){
                 await open(await this.get_episode_link(episode, "BROWSER"))
             }else if(this.player == 1){
@@ -200,11 +200,11 @@ class Anime{
         let selected:number; // Look, I'm sorry, but there is no way I can possibly document this in a sane way. It's a dumb patch.
         do{
             selected = await selection(
-                (episode <= 0)?                        [chalk.yellow("1/n) Next"), chalk.grey("2/p) Previous"), chalk.yellow("3/q) Quit")]:
-                    (episode >= this.episode_list.length-1)?    [chalk.grey("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/q) Quit")] :
-                                                                [chalk.yellow("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/q) Quit")],
+                (episode <= 0)?                        [chalk.yellow("1/n) Next"), chalk.grey("2/p) Previous"), chalk.yellow("3/s) Select"), chalk.green("4/q) Quit")]:
+                    (episode >= this.episode_list.length-1)?    [chalk.grey("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/s) Select"), chalk.green("4/q) Quit")] :
+                                                                [chalk.yellow("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/s) Select"), chalk.green("4/q) Quit")],
 
-                ["n", "p", "q"],
+                ["n", "p", "s", "q"],
                 ((thing:string) => {return (thing)}),
                 ((thing:string) => {return (thing)}),
                 true
@@ -229,6 +229,14 @@ class Anime{
                 await this.play(episode-1, config, config_dir)
                 break
             case 2:
+                if (this.episode_list.length == 1){
+                    await this.play(0, config, config_dir)
+                }else{
+                    console.log(`Select episode [1-${this.episode_list.length}]`)
+                    await this.play(await number_input(this.episode_list.length, 1)-1, config, config_dir)
+                }
+                break
+            case 3:
                 break
         }
 
