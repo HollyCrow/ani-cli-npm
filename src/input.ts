@@ -2,7 +2,7 @@ import chalk from "chalk";
 const _prompt = require("simple-input");
 
 
-async function selection(options:string[], extra_options:string[] = [], color1 = ((thing:string) => {return chalk.yellow(thing)}), color2 = ((thing:string) => {return chalk.green(thing)})){
+async function selection(options:string[], extra_options:string[] = [], color1 = ((thing:string) => {return chalk.yellow(thing)}), color2 = ((thing:string) => {return chalk.green(thing)}), exludes:number[] = []){
     /*
     selection(options, extra_options, color1, color2)
 
@@ -20,7 +20,14 @@ async function selection(options:string[], extra_options:string[] = [], color1 =
      recommended for this function to return a chalk.____() parsed string.
 
        default: ((thing:string) => {return chalk.yellow(thing)}) and ((thing:string) => {return chalk.green(thing)})
+
+     - exludes: number[] to exlude items from options by index.
     */
+
+    for (let x in exludes){
+        options.splice(Number(exludes[x]), 1)
+        extra_options.splice(Number(exludes[x]), 1)
+    }
 
     let color:boolean = true;
     for (let x in options){

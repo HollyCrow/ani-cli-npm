@@ -153,71 +153,39 @@ class Anime{
                 console.log(await this.get_episode_link(episode, config.player))
                 break
         }
-        config.most_recent.anime_id = this.id
-        config.most_recent.episode_number = episode
-        this.most_recent = episode;
 
-        new_cache(config_dir,{
-            id: this.id,
-            episode_list: this.episode_list,
-            most_recent: this.most_recent
-        })
-
-        write_config(config_dir, config)
-
-        switch( await selection(
-            ["Next", "Previous", "Quit"],
-            ["n", "p", "q"],
-            ((thing:string) => {return chalk.yellow(thing)}),
-            ((thing:string) => {return chalk.green(thing)}),
-            (
-                (episode <= 0)? [1] : (episode >= this.episode_list.length-1)? [0] : []
-            )
-        ) ){
-            case 0:
-                if (episode >= this.episode_list.length-1){
-                    await this.play(episode-1, config, config_dir)
-                }else{
-                    await this.play(episode+1, config, config_dir)
-                }
-                break
-            case 1:
-                if ((episode >= this.episode_list.length-1) || (episode <= 0)){
-                    break
-                }
-                await this.play(episode-1, config, config_dir)
-                break
-            case 2:
-                break
-        }
+        await this.play(episode, config, config_dir, true)
 
     }
 
-    private async play(episode:number, config:config_interface, config_dir:string){
+    private async play(episode:number, config:config_interface, config_dir:string, first:boolean=false){
         /*
         # Continues play cascade
         ## Continues on from play_head()
          */
-        console.clear()
-        console.log(`Playing ${this.id} episode ${episode+1}`)
-        if (this.player == 0){
-            await open(await this.get_episode_link(episode, "BROWSER"))
-        }else if(this.player == 1){
-            console.log(await this.get_episode_link(episode))
-        } else if (this.player.opts.app == "mpv"){
-            await this.player.load(await this.get_episode_link(episode))
-        }else{
-            this.player.quit()
-            this.player = await new PlayerController({
-                app: 'vlc',
-                args: ['--fullscreen'],
-                media: await this.get_episode_link(episode, config.player)
-            });
-            // @ts-ignore
-            await this.player.launch(err => {
-                if (err) return console.error(err.message);
-            });
+        if (!first){
+            console.clear()
+            console.log(`Playing ${this.id} episode ${episode+1}`)
+            if (this.player == 0){
+                await open(await this.get_episode_link(episode, "BROWSER"))
+            }else if(this.player == 1){
+                console.log(await this.get_episode_link(episode))
+            } else if (this.player.opts.app == "mpv"){
+                await this.player.load(await this.get_episode_link(episode))
+            }else{
+                this.player.quit()
+                this.player = await new PlayerController({
+                    app: 'vlc',
+                    args: ['--fullscreen'],
+                    media: await this.get_episode_link(episode, config.player)
+                });
+                // @ts-ignore
+                await this.player.launch(err => {
+                    if (err) return console.error(err.message);
+                });
+            }
         }
+
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
         write_config(config_dir, config)
