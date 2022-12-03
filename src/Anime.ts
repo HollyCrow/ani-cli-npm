@@ -22,6 +22,7 @@ class Anime{
 
     id: string = ""
     episode_list: string[] = []
+    most_recent:number = 0;
     player:any = 0;
 
     async init(anime_id: string, cache_folder:string){ // init mate
@@ -42,10 +43,14 @@ class Anime{
         }else{
             try{
                 this.episode_list = cache_object.episode_list
+                if (cache_object.most_recent != undefined){
+                    this.most_recent = cache_object.most_recent
+                }
             }catch{
                 await this.get_ep_bases(this.id)
             }
         }
+        new_cache(cache_folder,this)
         return 0;
     }
 
@@ -142,6 +147,8 @@ class Anime{
         }
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
+        this.most_recent = episode;
+        new_cache(config_dir,this)
         write_config(config_dir, config)
 
         if (episode <= 0){
@@ -213,6 +220,8 @@ class Anime{
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
         write_config(config_dir, config)
+        this.most_recent = episode;
+        new_cache(config_dir,this)
 
 
         if (episode <= 0){
@@ -255,7 +264,7 @@ class Anime{
         }
     }
 
-    async download(episode:number, download_folder:string, final_ep:number){ //TODO fix last progress bar appearing after selection.
+    async download(episode:number, download_folder:string, final_ep:number){
         /*
         ## Downloads an episode (counting from 0) to download_folder, with progress bar.
          */

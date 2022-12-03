@@ -1,6 +1,6 @@
 import chalk from "chalk";
-
 const _prompt = require("simple-input");
+
 
 async function selection(options:string[], extra_options:string[] = [], color1 = ((thing:string) => {return chalk.yellow(thing)}), color2 = ((thing:string) => {return chalk.green(thing)})){
     /*
@@ -28,13 +28,13 @@ async function selection(options:string[], extra_options:string[] = [], color1 =
             console.log(
                 color1((parseInt(x)+1).toString()+
                     ((extra_options[x] == undefined)? "" : "/"+extra_options[x])+
-                    ") "+options[x])
+                    ") "+options[x].replaceAll("-", " "))
             )
         }else{
             console.log(
                 color2((parseInt(x)+1).toString()+
                     ((extra_options[x] == undefined)? "" : "/"+extra_options[x])+
-                    ") "+options[x])
+                    ") "+options[x].replaceAll("-", " "))
             )
         }
         color = !color
@@ -59,12 +59,16 @@ async function input(){
     return await _prompt(">")
 }
 
-async function number_input(max:number, min:number=1){
+async function number_input(max:number, min:number=1, extra_options:string[] =[], extra_option_values:number[]=[]){
     let selector:string;
     let selection:number;
     do{
         selector = await _prompt(">")
-        selection = parseInt(selector)
+        if (extra_options.includes(selector.toLowerCase())){
+            selection = extra_option_values[extra_options.indexOf(selector)]
+        }else{
+            selection = parseInt(selector)
+        }
         if (selector == ""){
             selection = min
         }

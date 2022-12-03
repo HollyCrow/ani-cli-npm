@@ -52,8 +52,8 @@ async function main(){
             if (anime.episode_list.length == 1){
                 episode_number = 0;
             }else{
-                console.log(`Select episode [1-${anime.episode_list.length}]`)
-                episode_number = await number_input(anime.episode_list.length)
+                console.log(`Select episode [1-${anime.episode_list.length}] ${(anime.most_recent != 0)? `Or C to continue from ep${anime.most_recent+1}`: ""}`)
+                episode_number = await number_input(anime.episode_list.length, 1, (anime.most_recent != 0)? ["c"]: [], (anime.most_recent != 0)? [anime.most_recent+1] : [])
             }
             await anime.play_head(episode_number-1, config, cache_folder)
             if (anime.player != 1 && anime.player != 0){
