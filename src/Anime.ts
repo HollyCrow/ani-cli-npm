@@ -197,15 +197,24 @@ class Anime{
         })
 
 
-        switch( await selection(
-            ["Next", "Previous", "Quit"],
-            ["n", "p", "q"],
-            ((thing:string) => {return chalk.yellow(thing)}),
-            ((thing:string) => {return chalk.green(thing)}),
-            (
-                (episode <= 0)? [1] : (episode >= this.episode_list.length-1)? [0] : []
+        let selected:number; // Look, I'm sorry, but there is no way I can possibly document this in a sane way. It's a dumb patch.
+        do{
+            selected = await selection(
+                (episode <= 0)?                        [chalk.yellow("1/n) Next"), chalk.grey("2/p) Previous"), chalk.yellow("3/q) Quit")]:
+                    (episode >= this.episode_list.length-1)?    [chalk.grey("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/q) Quit")] :
+                                                                [chalk.yellow("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/q) Quit")],
+
+                ["n", "p", "q"],
+                ((thing:string) => {return (thing)}),
+                ((thing:string) => {return (thing)}),
+                true
             )
-        ) ){
+            if (!(selected != ((episode <= 0)? 1 : (episode >= this.episode_list.length-1)? 0 : -1))){
+                console.log(chalk.red("Invalid choice."))
+            }
+        }while (!(selected != ((episode <= 0)? 1 : (episode >= this.episode_list.length-1)? 0 : -1)))
+
+        switch(selected){
             case 0:
                 if (episode >= this.episode_list.length-1){
                     await this.play(episode-1, config, config_dir)

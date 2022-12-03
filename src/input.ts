@@ -2,7 +2,7 @@ import chalk from "chalk";
 const _prompt = require("simple-input");
 
 
-async function selection(options:string[], extra_options:string[] = [], color1 = ((thing:string) => {return chalk.yellow(thing)}), color2 = ((thing:string) => {return chalk.green(thing)}), exludes:number[] = []){
+async function selection(options:string[], extra_options:string[] = [], color1 = ((thing:string) => {return chalk.yellow(thing)}), color2 = ((thing:string) => {return chalk.green(thing)}), overwrite:boolean=false){
     /*
     selection(options, extra_options, color1, color2)
 
@@ -21,28 +21,28 @@ async function selection(options:string[], extra_options:string[] = [], color1 =
 
        default: ((thing:string) => {return chalk.yellow(thing)}) and ((thing:string) => {return chalk.green(thing)})
 
-     - exludes: number[] to exlude items from options by index.
+     - Overwrite: boolean. Please dont use this. I should be using it. It prints out the raw string instead of adding numbers to them to allow for bogus.
     */
 
-    for (let x in exludes){
-        options.splice(Number(exludes[x]), 1)
-        extra_options.splice(Number(exludes[x]), 1)
-    }
 
     let color:boolean = true;
     for (let x in options){
-        if (color){
-            console.log(
-                color1((parseInt(x)+1).toString()+
-                    ((extra_options[x] == undefined)? "" : "/"+extra_options[x])+
-                    ") "+options[x].replaceAll("-", " "))
-            )
+        if (!overwrite){
+            if (color){
+                console.log(
+                    color1((parseInt(x)+1).toString()+
+                        ((extra_options[x] == undefined)? "" : "/"+extra_options[x])+
+                        ") "+options[x].replaceAll("-", " "))
+                )
+            }else{
+                console.log(
+                    color2((parseInt(x)+1).toString()+
+                        ((extra_options[x] == undefined)? "" : "/"+extra_options[x])+
+                        ") "+options[x].replaceAll("-", " "))
+                )
+            }
         }else{
-            console.log(
-                color2((parseInt(x)+1).toString()+
-                    ((extra_options[x] == undefined)? "" : "/"+extra_options[x])+
-                    ") "+options[x].replaceAll("-", " "))
-            )
+            console.log(options[x])
         }
         color = !color
     }
