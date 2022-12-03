@@ -39,7 +39,11 @@ class Anime{
         this.id = anime_id
         if (cache_object == 0){
             await this.get_ep_bases(this.id)
-            new_cache(cache_folder,this)
+            new_cache(cache_folder,{
+                id: this.id,
+                episode_list: this.episode_list,
+                most_recent: this.most_recent
+            })
         }else{
             try{
                 this.episode_list = cache_object.episode_list
@@ -50,7 +54,11 @@ class Anime{
                 await this.get_ep_bases(this.id)
             }
         }
-        new_cache(cache_folder,this)
+        new_cache(cache_folder,{
+            id: this.id,
+            episode_list: this.episode_list,
+            most_recent: this.most_recent
+        })
         return 0;
     }
 
@@ -148,51 +156,44 @@ class Anime{
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
         this.most_recent = episode;
-        new_cache(config_dir,this)
+
+        new_cache(config_dir,{
+            id: this.id,
+            episode_list: this.episode_list,
+            most_recent: this.most_recent
+        })
+
         write_config(config_dir, config)
 
-        if (episode <= 0){
-            switch(await selection([
-                "Next",
-                "Quit"
-            ], ["n", "q"])){
-                case 0:
-                    await this.play(episode+1, config, config_dir)
-                    break
-                case 1:
-                    break
-            }
-        }else if(episode >= this.episode_list.length-2){
-            switch(await selection([
-                "Previous",
-                "Quit"
-            ], ["p", "q"])){
-                case 0:
+        switch( await selection(
+            ["Next", "Previous", "Quit"],
+            ["n", "p", "q"],
+            ((thing:string) => {return chalk.yellow(thing)}),
+            ((thing:string) => {return chalk.green(thing)}),
+            (
+                (episode <= 0)? [1] : (episode >= this.episode_list.length-1)? [0] : []
+            )
+        ) ){
+            case 0:
+                if (episode >= this.episode_list.length-1){
                     await this.play(episode-1, config, config_dir)
-                    break
-                case 1:
-                    break
-            }
-        }else{
-            switch(await selection([
-                "Next",
-                "Previous",
-                "Quit"
-            ], ["n", "p", "q"])){
-                case 0:
+                }else{
                     await this.play(episode+1, config, config_dir)
+                }
+                break
+            case 1:
+                if ((episode >= this.episode_list.length-1) || (episode <= 0)){
                     break
-                case 1:
-                    await this.play(episode-1, config, config_dir)
-                    break
-                case 2:
-                    break
-            }
+                }
+                await this.play(episode-1, config, config_dir)
+                break
+            case 2:
+                break
         }
 
     }
 
-    async play(episode:number, config:config_interface, config_dir:string){
+    private async play(episode:number, config:config_interface, config_dir:string){
         /*
         # Continues play cascade
         ## Continues on from play_head()
@@ -221,47 +222,77 @@ class Anime{
         config.most_recent.episode_number = episode
         write_config(config_dir, config)
         this.most_recent = episode;
-        new_cache(config_dir,this)
+        new_cache(config_dir,{
+            id: this.id,
+            episode_list: this.episode_list,
+            most_recent: this.most_recent
+        })
 
 
-        if (episode <= 0){
-            switch(await selection([
-                "Next",
-                "Quit"
-            ], ["n", "q"])){
-                case 0:
-                    await this.play(episode+1, config, config_dir)
-                    break
-                case 1:
-                    break
-            }
-        }else if(episode >= this.episode_list.length-2){
-            switch(await selection([
-                "Previous",
-                "Quit"
-            ], ["p", "q"])){
-                case 0:
+        switch( await selection(
+            ["Next", "Previous", "Quit"],
+            ["n", "p", "q"],
+            ((thing:string) => {return chalk.yellow(thing)}),
+            ((thing:string) => {return chalk.green(thing)}),
+            (
+                (episode <= 0)? [1] : (episode >= this.episode_list.length-1)? [0] : []
+            )
+        ) ){
+            case 0:
+                if (episode >= this.episode_list.length-1){
                     await this.play(episode-1, config, config_dir)
-                    break
-                case 1:
-                    break
-            }
-        }else{
-            switch(await selection([
-                "Next",
-                "Previous",
-                "Quit"
-            ], ["n", "p", "q"])){
-                case 0:
+                }else{
                     await this.play(episode+1, config, config_dir)
+                }
+                break
+            case 1:
+                if ((episode >= this.episode_list.length-1) || (episode <= 0)){
                     break
-                case 1:
-                    await this.play(episode-1, config, config_dir)
-                    break
-                case 2:
-                    break
-            }
+                }
+                await this.play(episode-1, config, config_dir)
+                break
+            case 2:
+                break
         }
+
+        // if (episode <= 0){
+        //     switch(await selection([
+        //         "Next",
+        //         "Quit"
+        //     ], ["n", "q"])){
+        //         case 0:
+        //             await this.play(episode+1, config, config_dir)
+        //             break
+        //         case 1:
+        //             break
+        //     }
+        // }else if(episode >= this.episode_list.length-2){
+        //     switch(await selection([
+        //         "Previous",
+        //         "Quit"
+        //     ], ["p", "q"])){
+        //         case 0:
+        //             await this.play(episode-1, config, config_dir)
+        //             break
+        //         case 1:
+        //             break
+        //     }
+        // }else{
+        //     switch(await selection([
+        //         "Next",
+        //         "Previous",
+        //         "Quit"
+        //     ], ["n", "p", "q"])){
+        //         case 0:
+        //             await this.play(episode+1, config, config_dir)
+        //             break
+        //         case 1:
+        //             await this.play(episode-1, config, config_dir)
+        //             break
+        //         case 2:
+        //             break
+        //     }
+        // }
     }
 
     async download(episode:number, download_folder:string, final_ep:number){

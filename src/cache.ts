@@ -14,7 +14,7 @@ function clear_cache(location:string, show:boolean){
     }
 }
 
-function new_cache(location:string, anime:Anime){
+function new_cache(location:string, anime:any){
     /*
     Creates cache of Anime object, in cache file.
      */
