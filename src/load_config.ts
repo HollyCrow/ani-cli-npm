@@ -16,7 +16,7 @@ function make_config_dir(cache_dir:string, debug:boolean){
 function write_config(cache_dir:string, config:config_interface){
     try{
         //make_config_dir(cache_dir, config.debug_mode)
-        fs.writeFileSync(cache_dir+"/config.conf", JSON.stringify(config))
+        fs.writeFileSync(cache_dir+"/config.conf", JSON.stringify(config), "utf-8")
     }catch{
         console.log(("Failed to write to config file."))
     }
@@ -34,9 +34,9 @@ function load_config(cache_dir: string){
         download_folder: ".",
         debug_mode: false
     }
-    if (fs.existsSync(cache_dir+"/ani-cli-npm/config.conf")){
+    if (fs.existsSync(cache_dir+"/config.conf")){
         // @ts-ignore
-        let tmp = JSON.parse(fs.readFileSync(cache_dir+"/ani-cli-npm/config.conf"), "utf8")
+        let tmp = JSON.parse(fs.readFileSync(cache_dir+"/config.conf"), "utf8")
 
         // @ts-ignore
         if (tmp.player !== undefined) config.player = tmp.player;
