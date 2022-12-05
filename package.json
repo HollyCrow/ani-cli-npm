@@ -1,6 +1,6 @@
 {
   "name": "ani-cli-npm",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "ani-cli tool rewritten as npm package",
   "main": "bin/index.js",
   "scripts": {
