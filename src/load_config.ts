@@ -32,7 +32,8 @@ function load_config(cache_dir: string){
             anime_id: ""
         },
         download_folder: ".",
-        debug_mode: false
+        debug_mode: false,
+        mpv_socket_path: "",
     }
     if (fs.existsSync(cache_dir+"/config.conf")){
         // @ts-ignore
@@ -53,6 +54,8 @@ function load_config(cache_dir: string){
         }
         // @ts-ignore
         if (tmp.download_folder !== undefined) config.download_folder = tmp.download_folder;
+        // @ts-ignore
+        if (tmp.mpv_socket_path !== undefined) config.mpv_socket_path = tmp.mpv_socket_path;
     }
 
     write_config(cache_dir, config)

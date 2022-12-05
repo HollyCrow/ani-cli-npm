@@ -15,6 +15,7 @@ async function config_(temp:config_interface){
         "Proxy; "+temp.proxy,
         "User agent; "+temp.user_agent,
         "Downloads folder; "+temp.download_folder,
+        "mpv socket connection file; "+temp.mpv_socket_path,
         "Save and exit",
         "Exit without saving"
     ], [], ((item) => {return chalk.cyan(item)}), ((item) => {return chalk.cyan(item)}))
@@ -58,9 +59,14 @@ async function config_(temp:config_interface){
             // @ts-ignore
             return temp, 0
         case 4:
+            console.log(chalk.cyan("New socket file"))
+            temp.mpv_socket_path = await(input())
+            // @ts-ignore
+            return temp, 0
+        case 5:
             // @ts-ignore
             return temp, 1
-        case 5:
+        case 6:
             // @ts-ignore
             return temp, 2
     }

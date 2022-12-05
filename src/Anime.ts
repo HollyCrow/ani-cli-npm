@@ -124,7 +124,8 @@ class Anime{
                 this.player = await new PlayerController({
                     app: 'mpv',
                     args: ['--fullscreen'],
-                    media: await this.get_episode_link(episode, config.player)
+                    media: await this.get_episode_link(episode, config.player),
+                    ipcPath: config.mpv_socket_path
                 });
                 // @ts-ignore
                 await this.player.launch(err => {

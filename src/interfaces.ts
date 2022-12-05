@@ -7,7 +7,8 @@ interface config_interface{
         anime_id: string
     }
     download_folder:string,
-    debug_mode: boolean
+    debug_mode: boolean,
+    mpv_socket_path: string
 }
 
 
