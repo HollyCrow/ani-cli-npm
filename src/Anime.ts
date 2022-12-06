@@ -138,7 +138,9 @@ class Anime{
                 this.player = await new PlayerController({
                     app: 'vlc',
                     args: ['--fullscreen'],
-                    media: await this.get_episode_link(episode, config.player)
+                    media: await this.get_episode_link(episode, config.player),
+                    httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,                     // HTTP port for local communication (vlc only)
+                    httpPass: (config.vlc_pass !== "")? config.vlc_socket : null,
                 });
                 // @ts-ignore
                 await this.player.launch(err => {

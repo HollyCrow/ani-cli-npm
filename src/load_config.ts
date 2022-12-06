@@ -34,6 +34,8 @@ function load_config(cache_dir: string){
         download_folder: ".",
         debug_mode: false,
         mpv_socket_path: "",
+        vlc_socket: 0,
+        vlc_pass: ""
     }
     if (fs.existsSync(cache_dir+"/config.conf")){
         // @ts-ignore
@@ -56,6 +58,10 @@ function load_config(cache_dir: string){
         if (tmp.download_folder !== undefined) config.download_folder = tmp.download_folder;
         // @ts-ignore
         if (tmp.mpv_socket_path !== undefined) config.mpv_socket_path = tmp.mpv_socket_path;
+        // @ts-ignore
+        if (tmp.vlc_socket !== undefined) config.vlc_socket = tmp.vlc_socket;
+        // @ts-ignore
+        if (tmp.vlc_pass !== undefined) config.vlc_pass = tmp.vlc_pass;
     }
 
     write_config(cache_dir, config)

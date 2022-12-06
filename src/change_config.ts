@@ -15,7 +15,9 @@ async function config_(temp:config_interface){
         "Proxy; "+temp.proxy,
         "User agent; "+temp.user_agent,
         "Downloads folder; "+temp.download_folder,
-        "mpv socket connection file; "+temp.mpv_socket_path,
+        "Mpv socket connection file; "+temp.mpv_socket_path,
+        "VLC socket; "+temp.vlc_socket,
+        "VLC pass; "+temp.vlc_pass,
         "Save and exit",
         "Exit without saving"
     ], [], ((item) => {return chalk.cyan(item)}), ((item) => {return chalk.cyan(item)}))
@@ -64,9 +66,19 @@ async function config_(temp:config_interface){
             // @ts-ignore
             return temp, 0
         case 5:
+            console.log(chalk.cyan("New VLC socket"))
+            temp.vlc_socket = await(input())
+            // @ts-ignore
+            return temp, 0
+        case 6:
+            console.log(chalk.cyan("New VLC pass"))
+            temp.vlc_pass = await(input())
+            // @ts-ignore
+            return temp, 0
+        case 7:
             // @ts-ignore
             return temp, 1
-        case 6:
+        case 8:
             // @ts-ignore
             return temp, 2
     }
