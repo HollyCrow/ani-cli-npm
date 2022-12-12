@@ -63,6 +63,8 @@ function load_config(cache_dir: string){
         if (tmp.vlc_socket !== undefined) config.vlc_socket = tmp.vlc_socket;
         // @ts-ignore
         if (tmp.vlc_pass !== undefined) config.vlc_pass = tmp.vlc_pass;
+        // @ts-ignore
+        if (tmp.w2g_api_key !== undefined) config.w2g_api_key = tmp.w2g_api_key;
     }
 
     write_config(cache_dir, config)
