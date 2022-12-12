@@ -33,6 +33,7 @@ async function generate_link(provider: number, id: string, player:string){
             return post
         case 2:
             provider_name = 'Animixplay'
+            console.log(`Fetching ${provider_name} links...`)
             let buffer = new Buffer(id)
             let enc_id = buffer.toString("base64")
             buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)

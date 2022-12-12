@@ -35,7 +35,8 @@ function load_config(cache_dir: string){
         debug_mode: false,
         mpv_socket_path: "",
         vlc_socket: 0,
-        vlc_pass: ""
+        vlc_pass: "",
+        w2g_api_key: ""
     }
     if (fs.existsSync(cache_dir+"/config.conf")){
         // @ts-ignore

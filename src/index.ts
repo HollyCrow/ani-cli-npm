@@ -55,7 +55,8 @@ async function main(){
                 episode_number = await number_input(anime.episode_list.length, 1, (anime.most_recent != 0)? ["c"]: [], (anime.most_recent != 0)? [anime.most_recent+1] : [])
             }
             await anime.play_head(episode_number-1, config, cache_folder)
-            if (anime.player != 1 && anime.player != 0){
+            if(anime.player.hasOwnProperty("quit")){
+                console.log("QUIT")
                 await anime.player.quit()
             }
             await main()

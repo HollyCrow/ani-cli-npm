@@ -5,10 +5,13 @@ import {config_interface} from "./interfaces";
 import {search_cache, new_cache} from "./cache";
 import {number_input, selection} from "./input";
 import {write_config} from "./load_config";
+const W2GClient = require("w2g-client")
 const open = require("open")
 const PlayerController = require("media-player-controller")
 const dl = require("download-file-with-progressbar");
 const chalk = require("chalk")
+
+
 
 class Anime{
     /*
@@ -123,7 +126,7 @@ class Anime{
                 console.log(("Opening MPV.."))
                 this.player = await new PlayerController({
                     app: 'mpv',
-                    args: ['--fullscreen'],
+                    args: ['--fullscreen', '--keep-open=yes'],
                     media: await this.get_episode_link(episode, config.player),
                     ipcPath: config.mpv_socket_path
                 });
@@ -139,8 +142,8 @@ class Anime{
                     app: 'vlc',
                     args: ['--fullscreen'],
                     media: await this.get_episode_link(episode, config.player),
-                    httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,                     // HTTP port for local communication (vlc only)
-                    httpPass: (config.vlc_pass !== "")? config.vlc_socket : null,
+                    //httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,                     // HTTP port for local communication (vlc only)
+                    //httpPass: (config.vlc_pass !== "")? config.vlc_socket : null,
                 });
                 // @ts-ignore
                 await this.player.launch(err => {
@@ -150,6 +153,17 @@ class Anime{
             case "BROWSER":
                 console.log(("Opening browser..."))
                 await open(await this.get_episode_link(episode, config.player))
+                break
+            case "W2G":
+                try{
+                    this.player = new W2GClient.W2GClient(config.w2g_api_key);
+                    await this.player.create(await this.get_episode_link(episode, config.player))
+                    console.log(chalk.green("Room link: " + await this.player.getLink()));
+                }catch{
+                    console.log(chalk.red("Failed to create w2g.tv room. \nthis can often be because your API token is invalid. You can change it in options."))
+                    process.exit()
+                }
+                await open(await this.player.getLink())
                 break
             case "LINK":
                 this.player = 1;
@@ -173,6 +187,9 @@ class Anime{
                 await open(await this.get_episode_link(episode, "BROWSER"))
             }else if(this.player == 1){
                 console.log(await this.get_episode_link(episode))
+            } else if (this.player.roomID != undefined){
+                console.log(chalk.green("Room link: "+ await this.player.getLink()));
+                this.player.update(await this.get_episode_link(episode))
             } else if (this.player.opts.app == "mpv"){
                 await this.player.load(await this.get_episode_link(episode))
             }else{
