@@ -13,6 +13,7 @@ import {load_config, make_config_dir, write_config} from "./load_config";
 import {selection, number_input} from "./input";
 import {config_} from "./change_config";
 import {download} from "./download";
+import {help} from "./help";
 
 const app_data_folder:string = _appDataFolder()
 const cache_folder:string = app_data_folder+"/ani-cli-npm"
@@ -30,8 +31,9 @@ async function main(){
         "Continue",
         "Download",
         "Option",
+        "Help",
         "Quit",
-    ], ["s", "c", "d", "o", "q"],
+    ], ["s", "c", "d", "o", "h", "q"],
         ((thing:string) => {return chalk.magenta(thing)}),
         ((thing:string) => {return chalk.magenta(thing)})
     )
@@ -108,7 +110,10 @@ async function main(){
 
             await main()
             break
-        case 4: // Quit
+        case 4:
+            await help()
+            break
+        case 5: // Quit
             console.log("Exit")
     }
     return 0;
