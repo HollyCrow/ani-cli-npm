@@ -56,7 +56,6 @@ async function main(){
             }
             await anime.play_head(episode_number-1, config, cache_folder)
             if(anime.player.hasOwnProperty("quit")){
-                console.log("QUIT")
                 await anime.player.quit()
             }
             await main()
@@ -71,9 +70,10 @@ async function main(){
             let continue_anime:Anime = new Anime()
             await continue_anime.init(config.most_recent.anime_id, cache_folder)
             await continue_anime.play_head(config.most_recent.episode_number, config, cache_folder)
-            if (continue_anime.player != 0 && continue_anime.player != 1){
+            if(continue_anime.player.hasOwnProperty("quit")){
                 await continue_anime.player.quit()
-            }await main()
+            }
+            await main()
             break
         case 2: // Download
             let code:number = await download(cache_folder, config)
