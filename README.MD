@@ -27,7 +27,7 @@ npx ani-cli-npm@latest
 ```
 
 ### Linux:
-#### - Install [nodejs](https://nodejs.org/en/download/ with your distrabutions package manager.
+#### - Install [nodejs](https://nodejs.org/en/download/) with your distrabutions package manager.
 #### - Run the following command:
 ```
 npx ani-cli-npm@latest
