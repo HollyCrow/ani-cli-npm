@@ -1,5 +1,5 @@
-import {RegexParse} from "./regex";
-import {curl} from "./curl";
+import {RegexParse} from "./core_utils/regex";
+import {curl} from "./core_utils/curl";
 import {input, selection} from "./input";
 import chalk from "chalk";
 

@@ -1,7 +1,7 @@
 import * as fs from "fs"
 //import chalk from 'chalk';
 
-import {config_interface} from "./interfaces";
+import {config_interface} from "../interfaces";
 
 function make_config_dir(cache_dir:string, debug:boolean){
     try{
@@ -29,6 +29,7 @@ function load_config(cache_dir: string){
         user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0",
         most_recent: {
             episode_number: 0,
+            episode_second: 0,
             anime_id: ""
         },
         download_folder: ".",
@@ -54,6 +55,8 @@ function load_config(cache_dir: string){
             if (tmp.most_recent.episode_number !== undefined) config.most_recent.episode_number = tmp.most_recent.episode_number;
             // @ts-ignore
             if (tmp.most_recent.anime_id !== undefined) config.most_recent.anime_id = tmp.most_recent.anime_id;
+            // @ts-ignore
+            if (tmp.most_recent.episode_second !== undefined) config.most_recent.episode_second = tmp.most_recent.episode_second;
         }
         // @ts-ignore
         if (tmp.download_folder !== undefined) config.download_folder = tmp.download_folder;

@@ -4,7 +4,8 @@ interface config_interface{
     user_agent: string,
     most_recent: {
         episode_number: number,
-        anime_id: string
+        episode_second: number,
+        anime_id: string,
     }
     download_folder:string,
     debug_mode: boolean,

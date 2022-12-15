@@ -9,9 +9,9 @@ const chalk = require("chalk")
 // Internal
 import {Anime} from "./Anime";
 import {search} from "./search_anime";
-import {load_config, make_config_dir, write_config} from "./load_config";
+import {load_config, make_config_dir, write_config} from "./file_managment/load_config";
 import {selection, number_input} from "./input";
-import {config_} from "./change_config";
+import {config_} from "./file_managment/change_config";
 import {download} from "./download";
 import {help} from "./help";
 

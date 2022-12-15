@@ -1,10 +1,11 @@
-import {curl} from "./curl";
-import {RegexParse} from "./regex";
+import {curl} from "./core_utils/curl";
+import {RegexParse} from "./core_utils/regex";
 import {generate_link} from "./generate_link";
 import {config_interface} from "./interfaces";
-import {search_cache, new_cache} from "./cache";
+import {search_cache, new_cache} from "./file_managment/cache";
 import {number_input, selection} from "./input";
-import {write_config} from "./load_config";
+import {write_config} from "./file_managment/load_config";
+import {unwatchFile} from "fs";
 const W2GClient = require("w2g-client")
 const open = require("open")
 const PlayerController = require("media-player-controller")
@@ -23,10 +24,11 @@ class Anime{
 
      */
 
-    id: string = ""
-    episode_list: string[] = []
+    id: string = "";
+    episode_list: string[] = [];
     most_recent:number = 0;
     player:any = 0;
+    current_pos:number = 0;
 
     async init(anime_id: string, cache_folder:string){ // init mate
         /*
@@ -52,6 +54,9 @@ class Anime{
                 this.episode_list = cache_object.episode_list
                 if (cache_object.most_recent != undefined){
                     this.most_recent = cache_object.most_recent
+                }
+                if (cache_object.position != undefined){
+                    this.current_pos = cache_object.position
                 }
             }catch{
                 await this.get_ep_bases(this.id)
@@ -120,16 +125,17 @@ class Anime{
          - If set to Link, it will simply print the media stream link to console, primarily for debuting peruses.
          */
         console.clear()
-        console.log(`Playing ${this.id} episode ${episode+1}`)
+        console.log(`Playing ${this.id} episode ${episode+1} from ${new Date(this.current_pos * 1000).toISOString().slice(11, 19)}`)
         switch (config.player){
             case "MPV":
                 console.log(("Opening MPV.."))
                 this.player = await new PlayerController({
                     app: 'mpv',
-                    args: ['--fullscreen', '--keep-open=yes'],
+                    args: ['--fullscreen', '--keep-open=yes', `--start=+${this.current_pos}`],
                     media: await this.get_episode_link(episode, config.player),
                     ipcPath: config.mpv_socket_path
                 });
+
                 // @ts-ignore
                 await this.player.launch(err => {
                     if (err) return console.error(err.message);
@@ -140,11 +146,12 @@ class Anime{
 
                 this.player = await new PlayerController({
                     app: 'vlc',
-                    args: ['--fullscreen'],
+                    args: ['--fullscreen', `--start-time ${this.current_pos}`],
                     media: await this.get_episode_link(episode, config.player),
                     //httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,                     // HTTP port for local communication (vlc only)
                     //httpPass: (config.vlc_pass !== "")? config.vlc_socket : null,
                 });
+
                 // @ts-ignore
                 await this.player.launch(err => {
                     if (err) return console.error(err.message);
@@ -171,6 +178,26 @@ class Anime{
                 break
         }
 
+        if (this.player.on !== undefined){
+            this.player.on('playback', (data: any) =>{
+                if (data.name == "time-pos" && data.value >= 0){
+                    this.current_pos = data.value;
+                }
+            })
+            this.player.on('app-exit', (code: any) => {
+                config.most_recent.anime_id = this.id
+                config.most_recent.episode_number = episode
+                config.most_recent.episode_second = this.current_pos
+                write_config(config_dir, config)
+                this.most_recent = episode;
+                new_cache(config_dir,{
+                    id: this.id,
+                    episode_list: this.episode_list,
+                    most_recent: this.most_recent,
+                    position: this.current_pos
+                })
+            })
+        }
         await this.play(episode, config, config_dir, true)
 
     }
@@ -208,12 +235,14 @@ class Anime{
 
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
+        config.most_recent.episode_second = this.current_pos
         write_config(config_dir, config)
         this.most_recent = episode;
         new_cache(config_dir,{
             id: this.id,
             episode_list: this.episode_list,
-            most_recent: this.most_recent
+            most_recent: this.most_recent,
+            position: this.current_pos
         })
 
 
@@ -259,45 +288,6 @@ class Anime{
             case 3:
                 break
         }
-
-        // if (episode <= 0){
-        //     switch(await selection([
-        //         "Next",
-        //         "Quit"
-        //     ], ["n", "q"])){
-        //         case 0:
-        //             await this.play(episode+1, config, config_dir)
-        //             break
-        //         case 1:
-        //             break
-        //     }
-        // }else if(episode >= this.episode_list.length-2){
-        //     switch(await selection([
-        //         "Previous",
-        //         "Quit"
-        //     ], ["p", "q"])){
-        //         case 0:
-        //             await this.play(episode-1, config, config_dir)
-        //             break
-        //         case 1:
-        //             break
-        //     }
-        // }else{
-        //     switch(await selection([
-        //         "Next",
-        //         "Previous",
-        //         "Quit"
-        //     ], ["n", "p", "q"])){
-        //         case 0:
-        //             await this.play(episode+1, config, config_dir)
-        //             break
-        //         case 1:
-        //             await this.play(episode-1, config, config_dir)
-        //             break
-        //         case 2:
-        //             break
-        //     }
-        // }
     }
 
     async download(episode:number, download_folder:string, final_ep:number){

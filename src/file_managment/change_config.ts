@@ -1,6 +1,6 @@
 const chalk = require("chalk")
-import {selection, input} from "./input";
-import {config_interface} from "./interfaces";
+import {selection, input} from "../input";
+import {config_interface} from "../interfaces";
 
 const configs = [ // List of functions, add function for extra config options.
     (async (temp: config_interface)=> {

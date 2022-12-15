@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import {Anime} from "./Anime";
+import {Anime} from "../Anime";
 
 function clear_cache(location:string, show:boolean){
     try{
