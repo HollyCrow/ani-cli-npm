@@ -5,7 +5,6 @@ import {config_interface} from "./interfaces";
 import {search_cache, new_cache} from "./file_managment/cache";
 import {number_input, selection} from "./input";
 import {write_config} from "./file_managment/load_config";
-import {unwatchFile} from "fs";
 const W2GClient = require("w2g-client")
 const open = require("open")
 const PlayerController = require("media-player-controller")
@@ -104,7 +103,7 @@ class Anime{
         let json = JSON.parse(lines)
         for (const value of Object.entries(json) as unknown as string[]) {
             if (typeof value[1] == "string"){
-                this.episode_list.push(value[1])
+                this.episode_list.push(value[1].replace("//gogohd.net/streaming.php?id=",""))
             }
         }
     }
@@ -207,6 +206,7 @@ class Anime{
         # Continues play cascade
         ## Continues on from play_head()
          */
+        this.current_pos = 0
         if (!first){
             console.clear()
             console.log(chalk.blue(`Playing ${this.id} episode ${episode+1}`))
