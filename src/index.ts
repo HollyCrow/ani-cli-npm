@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-process.removeAllListeners() // Ignore warning
+import * as process from "process";
+
+//process.removeAllListeners() // Ignore warning
 
 // External
 
@@ -12,6 +14,7 @@ import {search} from "./search_anime";
 import {load_config, make_config_dir, write_config} from "./file_managment/load_config";
 import {selection, number_input} from "./input";
 import {config_} from "./file_managment/change_config";
+import {clear_cache} from "./file_managment/cache";
 import {download} from "./download";
 import {help} from "./help";
 
@@ -19,8 +22,10 @@ const app_data_folder:string = _appDataFolder()
 const cache_folder:string = app_data_folder+"/ani-cli-npm"
 make_config_dir(cache_folder, true)
 
+
 console.clear()
 async function main(){
+    await clear_cache(cache_folder)
     let config = load_config(cache_folder)
     console.log(chalk.magenta("Ani-cli-npm!\n"))
     if (config.most_recent.anime_id !== ""){
@@ -31,9 +36,10 @@ async function main(){
         "Continue",
         "Download",
         "Option",
+        "Clear cache",
         "Help",
         "Quit",
-    ], ["s", "c", "d", "o", "h", "q"],
+    ], ["s", "c", "d", "o", " ", "h", "q"],
         ((thing:string) => {return chalk.magenta(thing)}),
         ((thing:string) => {return chalk.magenta(thing)})
     )
@@ -111,9 +117,21 @@ async function main(){
             await main()
             break
         case 4:
+            console.clear()
+            console.log(chalk.yellow("Warning, this will also clear your current position in each anime, are you sure you want to do this?"))
+            if (await selection(["yes", "no"], ["y", "n"]) == 0){
+                await clear_cache(cache_folder)
+                console.clear()
+                console.log(chalk.grey("Cache cleared"))
+            }else{
+                console.clear()
+            }
+            await main()
+            break
+        case 5:
             await help()
             break
-        case 5: // Quit
+        case 6: // Quit
             console.log("Exit")
     }
     return 0;

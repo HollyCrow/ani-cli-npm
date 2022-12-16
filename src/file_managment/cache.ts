@@ -1,17 +1,18 @@
 import * as fs from "fs"
-import {Anime} from "../Anime";
+import chalk from "chalk"
 
-function clear_cache(location:string, show:boolean){
+async function clear_cache(location:string){
     try{
-        console.log("ye sorry that doesnt exist yet.")
-        if (show){
-            console.log("Cleared cache")
-        }
+        await fs.readdir(location, (err, files) => {
+            if (err) throw err;
+            for (const file of files) {
+                if (file.includes(".cache")){fs.unlinkSync(location+"/"+file)}
+            }
+        });
     }catch{
-        if (show){
-            console.log("Failed to clear cache.")
-        }
+        console.log(chalk.red("Error clearing cache."))
     }
+    return 0
 }
 
 function new_cache(location:string, anime:any){
@@ -51,6 +52,7 @@ function search_cache(cache_folder:string, anime_id:string){
 function check_cache(location:string, anime_id:string){
     return fs.readdirSync(location).includes(anime_id+".cache")
 }
+
 
 
 export {clear_cache, new_cache, search_cache}
