@@ -51,7 +51,7 @@ async function main(){
             await anime.init(anime_id, cache_folder)
             let episode_number:number
             if (anime.episode_list.length == 1){
-                episode_number = 0;
+                episode_number = 1;
             }else{
                 console.log(`Select episode [1-${anime.episode_list.length}] ${(anime.most_recent != 0)? `Or C to continue from ep${anime.most_recent+1}`: ""}`)
                 episode_number = await number_input(anime.episode_list.length, 1, (anime.most_recent != 0)? ["c"]: [], (anime.most_recent != 0)? [anime.most_recent+1] : [])
