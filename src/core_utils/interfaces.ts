@@ -15,5 +15,10 @@ interface config_interface{
     w2g_api_key:string
 }
 
+interface player{
+    player: any,
+    play: ((episode_link:string) => {}),
+}
 
-export {config_interface}
+
+export {config_interface, player}

@@ -1,6 +1,6 @@
 const chalk = require("chalk")
 import {selection, input} from "../input";
-import {config_interface} from "../interfaces";
+import {config_interface} from "../core_utils/interfaces";
 
 const configs = [ // List of functions, add function for extra config options.
     (async (temp: config_interface)=> {
@@ -63,6 +63,27 @@ const configs = [ // List of functions, add function for extra config options.
         return temp, 0
     }),
     (async (temp: config_interface) => {
+        let config: config_interface = {
+            player: "BROWSER",
+            proxy: "",
+            user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/100.0",
+            most_recent: {
+                episode_number: 0,
+                episode_second: 0,
+                anime_id: ""
+            },
+            download_folder: ".",
+            debug_mode: false,
+            mpv_socket_path: "",
+            vlc_socket: 0,
+            vlc_pass: "",
+            w2g_api_key: ""
+        }
+        console.log(config)
+        // @ts-ignore
+        return config, 0
+    }),
+    (async (temp: config_interface) => {
         // @ts-ignore
         return temp, 1
     }),
@@ -94,6 +115,7 @@ async function config_(temp:config_interface){
             "VLC socket; "+temp.vlc_socket,
             "VLC pass; "+temp.vlc_pass,
             "W2G api token: "+temp.w2g_api_key,
+            "Reset to defaults",
             "Save and exit",
             "Exit without saving"
         ], [], ((item) => {return chalk.cyan(item)}), ((item) => {return chalk.cyan(item)}))

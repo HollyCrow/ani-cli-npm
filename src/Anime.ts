@@ -1,7 +1,7 @@
 import {curl} from "./core_utils/curl";
 import {RegexParse} from "./core_utils/regex";
 import {generate_link} from "./generate_link";
-import {config_interface} from "./interfaces";
+import {config_interface, player} from "./core_utils/interfaces";
 import {search_cache, new_cache} from "./file_managment/cache";
 import {number_input, selection} from "./input";
 import {write_config} from "./file_managment/load_config";
@@ -26,8 +26,14 @@ class Anime{
     id: string = "";
     episode_list: string[] = [];
     most_recent:number = 0;
-    player:any = 0;
+    player:player = new class implements player {
+        play(episode_link: string): {} {
+            return {};
+        }
+        player: any;
+    };
     current_pos:number = 0;
+    current_episode:number = 0;
 
     async init(anime_id: string, cache_folder:string){ // init mate
         /*
@@ -113,7 +119,7 @@ class Anime{
         # Starts play cascade.
 
         ## Takes in:
-        ### Episode number, counding from 0
+        ### Episode number, counting from 0
         ### Config object
         ### Config save directory
 
@@ -124,115 +130,178 @@ class Anime{
          - If set to Link, it will simply print the media stream link to console, primarily for debuting peruses.
          */
         console.clear()
-        console.log(`Playing ${this.id} episode ${episode+1} from ${new Date(this.current_pos * 1000).toISOString().slice(11, 19)}`)
+        console.log(`Playing ${this.id} episode ${episode+1}`)// from ${new Date(this.current_pos * 1000).toISOString().slice(11, 19)}`)
+        if (this.current_pos != 0){
+            console.log(`Most recent position: ${new Date(this.current_pos * 1000).toISOString().slice(11, 19)}`)
+        }
         switch (config.player){
             case "MPV":
                 console.log(("Opening MPV.."))
-                this.player = await new PlayerController({
+                this.player.player = await new PlayerController({
                     app: 'mpv',
-                    args: ['--fullscreen', '--keep-open=yes', `--start=+${this.current_pos}`],
+                    args: ['--fullscreen', '--keep-open=yes'],// `--start=+${this.current_pos}`],
                     media: await this.get_episode_link(episode, config.player),
                     ipcPath: config.mpv_socket_path
                 });
-
+                this.player.play = (async (episode_link:string) => {
+                    this.player.player.load(episode_link)
+                })
+                this.player.player.on('playback', (data: any) =>{
+                    if (data.name == "time-pos" && data.value >= 0){
+                        this.current_pos = data.value;
+                    }
+                    //console.log(data)
+                })
+                this.player.player.on('app-exit', (code: any) => {
+                    config.most_recent.anime_id = this.id
+                    config.most_recent.episode_number = episode
+                    config.most_recent.episode_second = this.current_pos
+                    write_config(config_dir, config)
+                    this.most_recent = episode;
+                    new_cache(config_dir,{
+                        id: this.id,
+                        episode_list: this.episode_list,
+                        most_recent: this.most_recent,
+                        position: this.current_pos
+                    })
+                })
                 // @ts-ignore
-                await this.player.launch(err => {
+                await this.player.player.launch(err => {
                     if (err) return console.error(err.message);
                 });
+
                 break
             case "VLC":
                 console.log(("Opening VLC.."))
-
-                this.player = await new PlayerController({
+                this.player.player = await new PlayerController({
                     app: 'vlc',
-                    args: ['--fullscreen', `--start-time ${this.current_pos}`],
+                    args: ['--fullscreen'],//, `--start-time ${this.current_pos}`],
                     media: await this.get_episode_link(episode, config.player),
-                    //httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,                     // HTTP port for local communication (vlc only)
+                    //httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,
                     //httpPass: (config.vlc_pass !== "")? config.vlc_socket : null,
                 });
-
                 // @ts-ignore
-                await this.player.launch(err => {
+                await this.player.player.launch(err => {
                     if (err) return console.error(err.message);
                 });
+
+                this.player.play = (async (episode_link:string) => {
+                    this.player.player.quit()
+                    this.player.player = await new PlayerController({
+                        app: 'vlc',
+                        args: ['--fullscreen'],// "--start-time 0"],
+                        media: episode_link
+                        //httpPort: (config.vlc_socket !== 0)? config.vlc_socket : null,
+                        //httpPass: (config.vlc_pass !== "")? config.vlc_socket : null,
+                    });
+                    this.player.player.on('playback', (data: any) =>{
+                        if (data.name == "time-pos" && data.value >= 0){
+                            this.current_pos = data.value;
+                        }
+                        //console.log(data)
+                    })
+
+                    this.player.player.on('app-exit', (code: any) => {
+                        config.most_recent.anime_id = this.id
+                        config.most_recent.episode_number = episode
+                        config.most_recent.episode_second = this.current_pos
+                        write_config(config_dir, config)
+                        this.most_recent = episode;
+                        new_cache(config_dir,{
+                            id: this.id,
+                            episode_list: this.episode_list,
+                            most_recent: this.most_recent,
+                            position: this.current_pos
+                        })
+                    })
+                    // @ts-ignore
+                    await this.player.player.launch(err => {
+                        if (err) return console.error(err.message);
+                    });
+
+
+                })
                 break
             case "BROWSER":
+                this.player.play = (async (episode_link:string) => {
+                    console.log(("Opening browser..."))
+                    await open(episode_link)
+                })
                 console.log(("Opening browser..."))
                 await open(await this.get_episode_link(episode, config.player))
                 break
             case "W2G":
                 try{
-                    this.player = new W2GClient.W2GClient(config.w2g_api_key);
-                    await this.player.create(await this.get_episode_link(episode, config.player))
-                    console.log(chalk.green("Room link: " + await this.player.getLink()));
+                    this.player.player = new W2GClient.W2GClient(config.w2g_api_key);
+                    await this.player.player.create(await this.get_episode_link(episode, config.player))
+                    console.log(chalk.green("Room link: " + await this.player.player.getLink()));
                 }catch{
                     console.log(chalk.red("Failed to create w2g.tv room. \nthis can often be because your API token is invalid. You can change it in options."))
                     process.exit()
                 }
-                await open(await this.player.getLink())
+                this.player.play = (async (episode_link:string) => {
+                    console.log(("Updating W2G room..."))
+                    console.log(chalk.green("Room link: " + await this.player.player.getLink()));
+                    try{
+                        await this.player.player.update(episode_link)
+                    }catch{
+                        console.log(chalk.red("Error updating W2G room. Very sorry, w2g functionality is a bit broken at present. Worst case you should be able to just restart with a new room for each episode."))
+                    }
+                })
+                console.log("Opening W2G.tv...")
+                await open(await this.player.player.getLink())
+
                 break
             case "LINK":
-                this.player = 1;
-                console.log(await this.get_episode_link(episode, config.player))
+                this.player.play = (async (episode_link:string) => {
+                    console.log(chalk.green(episode_link))
+                });
+                this.player.play(await this.get_episode_link(episode))
                 break
         }
-
-        if (this.player.on !== undefined){
-            this.player.on('playback', (data: any) =>{
-                if (data.name == "time-pos" && data.value >= 0){
-                    this.current_pos = data.value;
-                }
-            })
-            this.player.on('app-exit', (code: any) => {
-                config.most_recent.anime_id = this.id
-                config.most_recent.episode_number = episode
-                config.most_recent.episode_second = this.current_pos
-                write_config(config_dir, config)
-                this.most_recent = episode;
-                new_cache(config_dir,{
-                    id: this.id,
-                    episode_list: this.episode_list,
-                    most_recent: this.most_recent,
-                    position: this.current_pos
-                })
-            })
-        }
-        await this.play(episode, config, config_dir, true)
-
+        await this.play_controller(episode, config, config_dir, true)
     }
 
-    private async play(episode:number, config:config_interface, config_dir:string, first:boolean=false){
-        /*
-        # Continues play cascade
-        ## Continues on from play_head()
-         */
+    async next(player:string){
+        this.current_episode += 1
         this.current_pos = 0
-        if (!first){
-            console.clear()
-            console.log(chalk.blue(`Playing ${this.id} episode ${episode+1}`))
-            if (this.player == 0){
-                await open(await this.get_episode_link(episode, "BROWSER"))
-            }else if(this.player == 1){
-                console.log(await this.get_episode_link(episode))
-            } else if (this.player.roomID != undefined){
-                console.log(chalk.green("Room link: "+ await this.player.getLink()));
-                this.player.update(await this.get_episode_link(episode))
-            } else if (this.player.opts.app == "mpv"){
-                await this.player.load(await this.get_episode_link(episode))
-            }else{
-                this.player.quit()
-                this.player = await new PlayerController({
-                    app: 'vlc',
-                    args: ['--fullscreen'],
-                    media: await this.get_episode_link(episode, config.player)
-                });
-                // @ts-ignore
-                await this.player.launch(err => {
-                    if (err) return console.error(err.message);
-                });
-            }
-        }
+        this.player.play(await this.get_episode_link(this.current_episode, player))
+    }
+    async previous(player:string){
+        this.current_episode -= 1
+        this.current_pos = 0
+        this.player.play(await this.get_episode_link(this.current_episode, player))
+    }
 
+
+    private async play_controller(episode:number, config:config_interface, config_dir:string, first:boolean=false){
+        console.log(`Playing ${this.id} episode ${episode+1}`)// from ${new Date(this.current_pos * 1000).toISOString().slice(11, 19)}`)
+        // if (!first){
+        //     console.clear()
+        //     console.log(chalk.blue(`Playing ${this.id} episode ${episode+1}`))
+        //     if (this.player == 0){
+        //         await open(await this.get_episode_link(episode, "BROWSER"))
+        //     }else if(this.player == 1){
+        //         console.log(await this.get_episode_link(episode))
+        //     } else if (this.player.roomID != undefined){
+        //         console.log(chalk.green("Room link: "+ await this.player.getLink()));
+        //         this.player.update(await this.get_episode_link(episode))
+        //     } else if (this.player.opts.app == "mpv"){
+        //         await this.player.load(await this.get_episode_link(episode))
+        //     }else{
+        //         this.player.quit()
+        //         this.player = await new PlayerController({
+        //             app: 'vlc',
+        //             args: ['--fullscreen'],
+        //             media: await this.get_episode_link(episode, config.player)
+        //         });
+        //         // @ts-ignore
+        //         await this.player.launch(err => {
+        //             if (err) return console.error(err.message);
+        //         });
+        //     }
+        // }
+        this.current_episode = episode
         config.most_recent.anime_id = this.id
         config.most_recent.episode_number = episode
         config.most_recent.episode_second = this.current_pos
@@ -266,23 +335,29 @@ class Anime{
         switch(selected){
             case 0:
                 if (episode >= this.episode_list.length-1){
-                    await this.play(episode-1, config, config_dir)
+                    await this.next(config.player)
+                    await this.play_controller(episode-1, config, config_dir)
                 }else{
-                    await this.play(episode+1, config, config_dir)
+                    await this.next(config.player)
+                    await this.play_controller(episode+1, config, config_dir)
                 }
                 break
             case 1:
                 if ((episode >= this.episode_list.length-1) || (episode <= 0)){
                     break
                 }
-                await this.play(episode-1, config, config_dir)
+                await this.previous(config.player)
+                await this.play_controller(episode-1, config, config_dir)
                 break
             case 2:
                 if (this.episode_list.length == 1){
-                    await this.play(0, config, config_dir)
+                    this.player.play(await this.get_episode_link(0, config.player))
+                    await this.play_controller(0, config, config_dir)
                 }else{
                     console.log(`Select episode [1-${this.episode_list.length}]`)
-                    await this.play(await number_input(this.episode_list.length, 1)-1, config, config_dir)
+                    let episode = await number_input(this.episode_list.length, 1)-1
+                    this.player.play(await this.get_episode_link(episode, config.player))
+                    await this.play_controller(episode, config, config_dir)
                 }
                 break
             case 3:

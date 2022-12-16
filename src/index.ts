@@ -25,7 +25,6 @@ make_config_dir(cache_folder, true)
 
 console.clear()
 async function main(){
-    await clear_cache(cache_folder)
     let config = load_config(cache_folder)
     console.log(chalk.magenta("Ani-cli-npm!\n"))
     if (config.most_recent.anime_id !== ""){
@@ -64,7 +63,7 @@ async function main(){
             }
             await anime.play_head(episode_number-1, config, cache_folder)
             if(anime.player.hasOwnProperty("quit")){
-                await anime.player.quit()
+                await anime.player.player.quit()
             }
             await main()
             break
@@ -78,9 +77,9 @@ async function main(){
             let continue_anime:Anime = new Anime()
             await continue_anime.init(config.most_recent.anime_id, cache_folder)
             await continue_anime.play_head(config.most_recent.episode_number, config, cache_folder)
-            if(continue_anime.player.hasOwnProperty("quit")){
-                await continue_anime.player.quit()
-            }
+            try{
+                await continue_anime.player.player.quit()
+            }catch{}
             await main()
             break
         case 2: // Download

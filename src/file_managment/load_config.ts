@@ -1,7 +1,7 @@
 import * as fs from "fs"
 //import chalk from 'chalk';
 
-import {config_interface} from "../interfaces";
+import {config_interface} from "../core_utils/interfaces";
 
 function make_config_dir(cache_dir:string, debug:boolean){
     try{
