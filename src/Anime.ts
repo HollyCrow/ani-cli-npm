@@ -77,7 +77,7 @@ class Anime{
 
     async get_episode_link(episode:number, player:string = "VLC"){
         let episode_dpage = this.episode_list[episode]
-        let id = episode_dpage.replace("//gogohd.net/streaming.php?id=","")
+        let id = episode_dpage.replace("//gogohd.pro/streaming.php?id=","")
         id = id.slice(0, id.indexOf("="))
         let link:string = await generate_link(1,id, player)
         if (!link){
@@ -109,7 +109,7 @@ class Anime{
         let json = JSON.parse(lines)
         for (const value of Object.entries(json) as unknown as string[]) {
             if (typeof value[1] == "string"){
-                this.episode_list.push(value[1].replace("//gogohd.net/streaming.php?id=",""))
+                this.episode_list.push(value[1].replace("//gogohd.pro/streaming.php?id=",""))
             }
         }
     }

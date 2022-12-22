@@ -1,4 +1,4 @@
-const gogohd_url="https://gogohd.net/"
+const gogohd_url="https://gogohd.pro/"
 const base_url="https://animixplay.to"
 
 import {curl} from "./core_utils/curl";
