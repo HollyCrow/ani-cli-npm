@@ -34,7 +34,8 @@ async function generate_link(provider: number, id: string, player:string){
             return post
         case 2:
             console.log(chalk.red("Error: Animixplay.to has shut down. This removes a large amount of shows from this cli. Fix being worked on currently. Sorry for any inconvenience."))
-            // provider_name = 'Animixplay'
+            process.exit()
+        // provider_name = 'Animixplay'
             // console.log(`Fetching ${provider_name} links...`)
             // let buffer = new Buffer(id)
             // let enc_id = buffer.toString("base64")
