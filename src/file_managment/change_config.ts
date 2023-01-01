@@ -1,5 +1,5 @@
 const chalk = require("chalk")
-import {selection, input} from "../input";
+import {selection, input} from "../IO/input";
 import {config_interface} from "../core_utils/interfaces";
 
 const configs = [ // List of functions, add function for extra config options.
@@ -77,7 +77,8 @@ const configs = [ // List of functions, add function for extra config options.
             mpv_socket_path: "",
             vlc_socket: 0,
             vlc_pass: "",
-            w2g_api_key: ""
+            w2g_api_key: "",
+            show_cover: false
         }
         console.log(config)
         // @ts-ignore

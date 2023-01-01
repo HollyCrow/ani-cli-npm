@@ -1,8 +1,8 @@
 const gogohd_url="https://gogohd.net/"
 const base_url="https://animixplay.to"
 
-import {curl} from "./core_utils/curl";
-import {RegexParse} from "./core_utils/regex";
+import {curl} from "../core_utils/curl";
+import {RegexParse} from "../core_utils/regex";
 
 
 async function generate_link(provider: number, id: string, player:string){

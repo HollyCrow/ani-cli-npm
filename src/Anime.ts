@@ -1,16 +1,17 @@
 import {curl} from "./core_utils/curl";
 import {RegexParse} from "./core_utils/regex";
-import {generate_link} from "./generate_link";
+import {generate_link} from "./url_genoration/generate_link";
 import {config_interface, player} from "./core_utils/interfaces";
 import {search_cache, new_cache} from "./file_managment/cache";
-import {number_input, selection} from "./input";
+import {number_input, selection} from "./IO/input";
 import {write_config} from "./file_managment/load_config";
 const W2GClient = require("w2g-client")
 const open = require("open")
 const PlayerController = require("media-player-controller")
 const dl = require("download-file-with-progressbar");
 const chalk = require("chalk")
-
+const m3u8ToMp4 = require("m3u8-to-mp4");
+const converter = new m3u8ToMp4();
 
 
 class Anime{
@@ -273,8 +274,11 @@ class Anime{
         this.player.play(await this.get_episode_link(this.current_episode, player))
     }
 
-
     private async play_controller(episode:number, config:config_interface, config_dir:string, first:boolean=false){
+        if (config.show_cover){
+
+        }
+        console.clear()
         console.log(`Playing ${this.id} episode ${episode+1}`)// from ${new Date(this.current_pos * 1000).toISOString().slice(11, 19)}`)
         // if (!first){
         //     console.clear()
@@ -317,6 +321,7 @@ class Anime{
 
         let selected:number; // Look, I'm sorry, but there is no way I can possibly document this in a sane way. It's a dumb patch.
         do{
+            console.clear()
             selected = await selection(
                 (episode <= 0)?                        [chalk.yellow("1/n) Next"), chalk.grey("2/p) Previous"), chalk.yellow("3/s) Select"), chalk.green("4/q) Quit")]:
                     (episode >= this.episode_list.length-1)?    [chalk.grey("1/n) Next"), chalk.green("2/p) Previous"), chalk.yellow("3/s) Select"), chalk.green("4/q) Quit")] :
@@ -369,40 +374,51 @@ class Anime{
         /*
         ## Downloads an episode (counting from 0) to download_folder, with progress bar.
          */
+        while (episode <= final_ep){
+
+        }
         try {
-            // @ts-ignore
             let ep_link: string = await this.get_episode_link(episode)
             let file_name = `${this.id}-${episode + 1}.mp4`
-            if (ep_link.includes(".m3u8")) console.log(chalk.red("Warning: Animixplay will download an m3u8 file. This will require some extra steps to play. It is advised to use a 3rd party website or tool to download these from the link."));
-            // @ts-ignore
-            let option = {
-                filename: (ep_link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name),
-                dir: download_folder,
-                onDone: (final_ep > episode) ? ((info: any) => {
-                    // @ts-ignore
-                    console.log(chalk.green(`\n -- 1Download finished -- \nLocation: ${info.path}. Size: ${Math.round(info.size / 100000) * 10} Bytes\n`));
-                    this.download(episode + 1, download_folder, final_ep)
-                }) : ((info: any) => {
-                    // @ts-ignore
-                    console.log(chalk.green(`\n -- 2Download finished -- \n${info.path}. Size: ${Math.round(info.size / 100000) * 10} Bytes\n`));
-                }),
+            if (ep_link.includes(".m3u8")){
+                console.log(chalk.green(`Downloading episode ${episode+1} of ${this.id.replace("-", "")} to ${download_folder+"/"+file_name}...`))
+                console.log("Progress bar unavailable for m3u8 files.")
+                await converter
+                    .setInputFile(ep_link)
+                    .setOutputFile((download_folder+"/"+file_name))
+                    .start();
+                console.log(chalk.green("Download finished."))
+            }else{
                 // @ts-ignore
-                onError: (err) => {
-                    console.log(chalk.red('error', err));
-                    this.download(episode, download_folder, final_ep)
-                },
-                // @ts-ignore
-                onProgress: (curr, total) => {
-                    process.stdout.clearLine(0);
-                    process.stdout.cursorTo(0);
-                    process.stdout.write("\x1b[32m -- " + (curr / total * 100).toFixed(2) + "% " + "#".repeat(Math.ceil((curr / total) * ((process.stdout.columns - 20) / 1.5))) + "~".repeat(Math.ceil(((process.stdout.columns - 20) / 1.5) - (curr / total) * ((process.stdout.columns - 20) / 1.5))) + " -- \x1b[0m")
+                let option = {
+                    filename: (ep_link.includes("m3u8") ? file_name.replace("mp4", "m3u8") : file_name),
+                    dir: download_folder,
+                    onDone: (final_ep > episode) ? ((info: any) => {
+                        // @ts-ignore
+                        console.log(chalk.green(`\n -- 1Download finished -- \nLocation: ${info.path}. Size: ${Math.round(info.size / 100000) * 10} Bytes\n`));
+                        this.download(episode + 1, download_folder, final_ep)
+                    }) : ((info: any) => {
+                        // @ts-ignore
+                        console.log(chalk.green(`\n -- 2Download finished -- \n${info.path}. Size: ${Math.round(info.size / 100000) * 10} Bytes\n`));
+                    }),
+                    // @ts-ignore
+                    onError: (err) => {
+                        console.log(chalk.red('error', err));
+                        this.download(episode, download_folder, final_ep)
+                    },
+                    // @ts-ignore
+                    onProgress: (curr, total) => {
+                        process.stdout.clearLine(0);
+                        process.stdout.cursorTo(0);
+                        process.stdout.write("\x1b[32m -- " + (curr / total * 100).toFixed(2) + "% " + "#".repeat(Math.ceil((curr / total) * ((process.stdout.columns - 20) / 1.5))) + "~".repeat(Math.ceil(((process.stdout.columns - 20) / 1.5) - (curr / total) * ((process.stdout.columns - 20) / 1.5))) + " -- \x1b[0m")
+                    }
                 }
-            }
-            //console.log((`${option.dir}/${option.filename}`))
+                //console.log((`${option.dir}/${option.filename}`))
 
-            return await dl(ep_link, option);
+                return await dl(ep_link, option);
+            }
         }catch{
-            this.download(episode, download_folder, final_ep)
+            await this.download(episode, download_folder, final_ep)
         }
     }
 

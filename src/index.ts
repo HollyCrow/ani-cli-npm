@@ -1,29 +1,31 @@
 #!/usr/bin/env node
 import * as process from "process";
-
 //process.removeAllListeners() // Ignore warning
-
+// TODO: Use terminal-kit properly
 // External
 
 import _appDataFolder from "appdata-path";
+const terminal_kit = require("terminal-kit")
 const chalk = require("chalk")
 
 // Internal
 import {Anime} from "./Anime";
-import {search} from "./search_anime";
+import {search} from "./url_genoration/search_anime";
 import {load_config, make_config_dir, write_config} from "./file_managment/load_config";
-import {selection, number_input} from "./input";
+import {selection, number_input} from "./IO/input";
 import {config_} from "./file_managment/change_config";
 import {clear_cache} from "./file_managment/cache";
 import {download} from "./download";
-import {help} from "./help";
+import {help} from "./IO/help";
+// import {display_cover} from "./cover_manager";
 
 const app_data_folder:string = _appDataFolder()
 const cache_folder:string = app_data_folder+"/ani-cli-npm"
 make_config_dir(cache_folder, true)
-
+// display_cover()
 
 console.clear()
+terminal_kit.drawImage("https://gogocdn.net/cover/yuri-on-ice-dub.png")
 async function main(){
     let config = load_config(cache_folder)
     console.log(chalk.magenta("Ani-cli-npm!\n"))

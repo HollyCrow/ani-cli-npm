@@ -1,6 +1,6 @@
-import {search} from "./search_anime";
+import {search} from "./url_genoration/search_anime";
 import {Anime} from "./Anime";
-import {number_input} from "./input";
+import {number_input} from "./IO/input";
 import {config_interface} from "./core_utils/interfaces";
 
 async function download(cache_folder:string, config:config_interface){

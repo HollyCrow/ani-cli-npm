@@ -1,7 +1,8 @@
-import {RegexParse} from "./core_utils/regex";
-import {curl} from "./core_utils/curl";
-import {input, selection} from "./input";
+import {RegexParse} from "../core_utils/regex";
+import {curl} from "../core_utils/curl";
+import {input, selection} from "../IO/input";
 import chalk from "chalk";
+
 
 async function search_anime(search: string){
     let filter = "*<ahref=\"/category/*\"title=\"*\">"

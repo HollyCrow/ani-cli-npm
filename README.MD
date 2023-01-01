@@ -3,6 +3,8 @@
 ### An Anime client, writen in nodeJS, to access any* anime without the need for ad filled websites! Just install, search for the anime of your choice, and watch in the video player of your choice.
 ### Typescript rewrite of the [ani-cli](https://github.com/pystardust/ani-cli) package for linux.
 
+# Warning: due to shutdowns of Animixplay, this tool, along with ani-cli, is broken at present. I am currently working on a fix, but for now this will not work.
+
 ![image](https://user-images.githubusercontent.com/74017165/205444723-20520eb1-55dd-4103-811b-07e2cf6c466d.png)
 
 
