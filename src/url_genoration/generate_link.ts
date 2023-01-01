@@ -1,8 +1,9 @@
-const gogohd_url="https://gogohd.net/"
+const gogohd_url="https://gogohd.pro/"
 const base_url="https://animixplay.to"
 
-import {curl} from "../core_utils/curl";
-import {RegexParse} from "../core_utils/regex";
+import {curl} from "./core_utils/curl";
+import {RegexParse} from "./core_utils/regex";
+const chalk = require("chalk")
 
 
 async function generate_link(provider: number, id: string, player:string){
@@ -32,17 +33,19 @@ async function generate_link(provider: number, id: string, player:string){
             post = post.slice(0, post.indexOf("\"")).replaceAll("\\/","/")
             return post
         case 2:
-            provider_name = 'Animixplay'
-            console.log(`Fetching ${provider_name} links...`)
-            let buffer = new Buffer(id)
-            let enc_id = buffer.toString("base64")
-            buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
-            let ani_id = buffer.toString("base64")
-            buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
-            if (player === "BROWSER"){
-                return `${base_url}/api/live${ani_id}`
-            }
-            return buffer.toString("utf-8")
+            console.log(chalk.red("Error: Animixplay.to has shut down. This removes a large amount of shows from this cli. Fix being worked on currently. Sorry for any inconvenience."))
+            process.exit()
+        // provider_name = 'Animixplay'
+            // console.log(`Fetching ${provider_name} links...`)
+            // let buffer = new Buffer(id)
+            // let enc_id = buffer.toString("base64")
+            // buffer = new Buffer(id+"LTXs3GrU8we9O"+enc_id)
+            // let ani_id = buffer.toString("base64")
+            // if (player === "BROWSER"){
+            //     return `${base_url}/api/live${ani_id}`
+            // }
+            // buffer = Buffer.from((await curl(`${base_url}/api/live${ani_id}`, "GET", true)).split("#")[1], "base64")
+            // return buffer.toString("utf-8")
     }
 }
 
