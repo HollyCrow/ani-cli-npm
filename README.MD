@@ -1,9 +1,11 @@
+# ⚠️BROKEN: Due to shutdowns of Animixplay, this tool no longer works. [Ani-cli](https://github.com/pystardust/ani-cli) has a fix for this, but the amount of availabile anime has been reduced so much that I don't plan on fixing this any time soon, if at all. But if anyone does have a good method for getting anime links, please do tell me.
+
+
 # ANI-CLI-NPM
 
 ### An Anime client, writen in nodeJS, to access any* anime without the need for ad filled websites! Just install, search for the anime of your choice, and watch in the video player of your choice.
 ### Typescript rewrite of the [ani-cli](https://github.com/pystardust/ani-cli) package for linux.
 
-# Warning: due to shutdowns of Animixplay, this tool, along with ani-cli, is broken at present. I am currently working on a fix, but for now this will not work.
 
 ![image](https://user-images.githubusercontent.com/74017165/205444723-20520eb1-55dd-4103-811b-07e2cf6c466d.png)
 
@@ -74,6 +76,3 @@ npm run start
 
 ![image](https://user-images.githubusercontent.com/74017165/205444327-d67c5099-beaf-4895-9c74-c24b79a95e07.png)
 
-
-
-<a href="https://www.buymeacoffee.com/bumpkinpi" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
