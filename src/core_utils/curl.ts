@@ -1,21 +1,20 @@
 import https from "https";
-import querystring from "querystring";
 
 import {config} from "../config";
+import {CurlOptions} from "../interfaces";
 
 const agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'; // Replace with your desired User-Agent string
 
 
-interface CurlOptions {
-    url: string;
-    options?: any;
-}
 
 function curl(options: CurlOptions): any {
 
     if (!options.options) {
         options.options = {
-            method: "GET"
+            method: "GET",
+            headers: {
+                'User-Agent': agent
+            },
         }
     }
 
