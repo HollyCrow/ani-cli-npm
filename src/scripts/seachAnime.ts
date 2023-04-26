@@ -11,6 +11,14 @@ const searchGPL:string = "query(        $search: SearchInput        $limit: Int 
 
 
 async function searchAnime(searchQuery:string, mode:string = "sub"): Promise<animeData[]>{
+    /*
+    * ## searchAnime(searchQuery:string, mode:string = "sub"): Promise<animeData[]> {}
+    *
+    *  - searchQuery: String to search for
+    *
+    *  - mode: "sub"/"dub". Defaults to sub.
+    *
+    */
     if (config.verbose){
         console.log(`Searching for anime: ${searchQuery}`)
     }

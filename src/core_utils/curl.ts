@@ -48,4 +48,4 @@ function curl(options: CurlOptions): any {
 
 }
 
-export {curl, CurlOptions}
+export {curl}
