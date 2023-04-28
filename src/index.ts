@@ -5,7 +5,7 @@ import {episodeList} from "./scripts/episodeList";
 import {getEpisodeLink} from "./scripts/getEpisodeLink";
 
 async function main(){
-    let list:animeData = (await searchAnime("naruto", "dub"))[0];
+    let list:animeData = (await searchAnime("boruto", "dub"))[0];
     console.log(list.id);
 
     console.log(await episodeList(list))

@@ -44,17 +44,52 @@ async function getEpisodeLink(anime:animeData, episode:number, mode:string = "su
     for (let url of JSONData){
         if (url["sourceUrl"].includes("clock?id=")){
             resp[url["sourceName"]] = url["sourceUrl"].split("clock?id=")[1]
+            await getLinks(url["sourceUrl"].split("clock?id=")[1])
         }
     }
-
-
-
-    console.log("RESP - " + JSON.stringify(resp) + " - RESP");
-    console.log(anime.name)
 }
 
 
-async function generateLinks(base:string, provider:number){
+async function getLinks(providerID:string){
+    const data = querystring.stringify({
+        id: providerID
+    });
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': agent,
+            cipher: 'AES256-SHA256',
+        },
+    };
+
+    let rawData:string = (await curl(
+        {
+            url: `https://allanimenews.com/apivtwo/clock.json?${data}`,
+            options: options
+        }
+    ));
+
+    const lines = rawData.split('\n');
+    const regex1 = /.*"link":"([^"]*)".*"resolutionStr":"([^"]*)".*/;
+    const regex2 = /.*"url":"([^"]*)".*"hardsub_lang":"en-US".*/;
+
+    let output = '';
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const match1 = line.match(regex1);
+        const match2 = line.match(regex2);
+
+        if (match1) {
+            output += `${match1[2]} >${match1[1]}\n`;
+        } else if (match2) {
+            output += `${match2[1]}\n`;
+        }
+    }
+
+    console.log(output.trim());
+
 
 }
 
