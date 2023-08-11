@@ -1,4 +1,4 @@
-# ⚠️BROKEN: Due to shutdowns of Animixplay, this tool no longer works. [Ani-cli](https://github.com/pystardust/ani-cli) has a fix for this, but the amount of availabile anime has been reduced so much that I don't plan on fixing this any time soon, if at all. But if anyone does have a good method for getting anime links, please do tell me.
+# ⚠️BROKEN: Due to shutdowns of Animixplay, this tool no longer works.
 
 
 # ANI-CLI-NPM
